@@ -6,7 +6,7 @@
 
 
 #ifndef N_NOTAS
-   #define N_NOTAS  20
+   #define N_NOTAS  200
 #endif
 
 using namespace std;
