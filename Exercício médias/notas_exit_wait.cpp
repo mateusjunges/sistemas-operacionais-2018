@@ -29,7 +29,7 @@ void calcular_media(struct notas notas[]);
 
 void media_fork(struct notas notas[]);
 
-int comparacao(const void *a, const void *b);
+int comparacao(const void *valorA, const void *valorB);
 
 
 
