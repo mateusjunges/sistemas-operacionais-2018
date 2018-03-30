@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------*/
-/*    A Multitasking Kernel for DOS                                        */
+/*   Um kernel multitarefa para DOS                                    */
 /*                                                                         */
 /*    Do livro Born to Code in C                                           */
 /*                                                                         */
@@ -16,42 +16,42 @@ struct task_struct
 {
   unsigned sp;
   unsigned ss;
-  enum task_state status;	/* task state */
-  unsigned *pending;		/* semaphore waiting for */
-  int sleep;			/* number of ticks to sleep */
-  unsigned char *stck;		/* stack */
+  enum task_state status;	/*Estado da tarefa*/
+  unsigned *pending;		/*semaforo esperando por...*/
+  int sleep;			/*tempo para sleep*/
+  unsigned char *stck;		 /*pilha*/
 } tasks[NUM_TASKS];
 
 void interrupt (*old_int8) (void);
 
-unsigned io_out= 0;	/* i/o semaphore */
-char far *vid_mem;	/* pointer to video memory */
+unsigned io_out= 0;	 /* semaforo para IO, entrada e saida*/
+char far *vid_mem;	/*Ponteiro para memoria de video*/
 
 
 /*-------------------------------------------------------------------------*/
-/*  Timer interrupt task scheduler                                         */
+/*  Timer de interrupção de tarefas dos escalonador                                         */
 /*-------------------------------------------------------------------------*/
 void interrupt int8_task_switch(void)
 {
-  (*old_int8) ();		/* call original int8 routine */
-  if(single_task)		/* if single tasking is on, then return  */
-    return;			/* without a task switch */
-  tasks[tswitch].ss = _SS;	/* save current task's stack */
+  (*old_int8) ();		/* chama a rotina int8 original*/
+  if(single_task)		/* Se uma unica tarefa esta ativa, entao retorne */
+    return;			/* sem uma escolha de tarefa */
+  tasks[tswitch].ss = _SS;	/* salva o status atual da tarefa/processo na pilha */
   tasks[tswitch].sp = _SP;
 
-  /* if current task was running when interrupted, then change
-     its state to READY */
+  /* Se uma tarefa ou processo estava rodando quando interrompida,
+     entao muda o seu status para READY*/
   if(tasks[tswitch].status == RUNNING)
     tasks[tswitch].status = READY;
 
-  /* see if any sleepers need to wake up */
+  /* Verifica se algum sleeper precisa acordar */
   check_sleepers();
 
-  /* see if all tasks are dead; if so, stop tasking */
+  /* Verifica se todos os processos estao mortos. se sim, para */
   if(all_dead())
     tasking = 0;
 
-  /* stop tasking */
+  /* Parou */
   if(!tasking)
   {
      disable();
@@ -63,7 +63,7 @@ void interrupt int8_task_switch(void)
      return;
   }
 
-  /* find new task */
+  /* Encontra novo processo */
   tswitch++;
   if(tswitch == NUM_TASKS)
     tswitch = 0;
@@ -73,18 +73,17 @@ void interrupt int8_task_switch(void)
     if(tswitch == NUM_TASKS)
       tswitch = 0;
   }
-   _SS = tasks[tswitch].ss;		/* switch task to new task */
+   _SS = tasks[tswitch].ss;		/* troca o processo para o novo */
    _SP = tasks[tswitch].sp;
-  tasks[tswitch].status = RUNNING;     	/* state is running */
+  tasks[tswitch].status = RUNNING;     	/* status muda para RUNNING*/
 }
 
 
 /*-------------------------------------------------------------------------*/
 /*   task_switch()                                                         */
-/*                                                                         */
-/*   This is the manual task switcher which your program can call to force */
-/* a task switch. It does not decrement any sleeper's sleep counter        */
-/* because a clock tick has not occurred.                                  */
+/*  Alternador de tarefas alternativo que o programa pode chamar para forçar
+ a mudança de processo. Não diminui o contador de sleeper, porque nao ocorreu um clock
+                                                                    */
 /*-------------------------------------------------------------------------*/
 void interrupt task_switch(void)
 {
@@ -92,19 +91,19 @@ void interrupt task_switch(void)
     return;
 
   disable();
-    tasks[tswitch].ss = _SS;	/* save current task's stack */
+    tasks[tswitch].ss = _SS;	/* salva o status atual do processo na pilha */
     tasks[tswitch].sp = _SP;
 
-    /* if current task was running when interrupted, then change
-     its state to READY */
+    /* Se um processo estava rodando quando interrompido, muda
+     o seu status pra READY*/
     if(tasks[tswitch].status == RUNNING)
       tasks[tswitch].status = READY;
 
-    /* see if all tasks are dead; if so, stop tasking */
+    /* Verfica se todos os processos estao mortos. Se assim for, para */
     if(all_dead())
       tasking = 0;
 
-    /* stop tasking */
+    /* Parou */
     if(!tasking)
     {
       disable();
@@ -116,7 +115,7 @@ void interrupt task_switch(void)
       return;
     }
 
-    /* find new task */
+    /*encontra um novo processo */
     tswitch++;
     if(tswitch == NUM_TASKS)
       tswitch = 0;
@@ -126,9 +125,9 @@ void interrupt task_switch(void)
       if(tswitch == NUM_TASKS)
 	tswitch = 0;
     }
-    _SS = tasks[tswitch].ss;		/* switch task to new task */
+    _SS = tasks[tswitch].ss;		/* Muda para o novo processo */
     _SP = tasks[tswitch].sp;
-    tasks[tswitch].status = RUNNING;   	/* state is running */
+    tasks[tswitch].status = RUNNING;   	/* status muda pra RUNNING */
   enable();
 }
 
@@ -136,23 +135,24 @@ void interrupt task_switch(void)
 /*-------------------------------------------------------------------------*/
 /*   multitask()                                                           */
 /*                                                                         */
-/*   Start up the multitasking kernel.                                     */
+/*   Inicia o kernel multitarefas                                     */
 /*-------------------------------------------------------------------------*/
 void interrupt multitask(void)
 {
   disable();
 
-    /* switch in the timer-based scheduler */
+    /* alterna o timer do escalonador */
     old_int8 = getvect(8);
     setvect(8, int8_task_switch);
 
-    /* save the program's stack pointer and segment so that when tasking
-       ends, execution can continue where it left off in the program.
+    /*
+    salva o SP (stack pointer) do programa para que, quando terminar,
+    a execução continue de onde parou
     */
     oldss = _SS;
     oldsp = _SP;
 
-    /* set stack to first task's stack */
+    /*  seta a pilha para a primeira tarefa */
     _SS = tasks[tswitch].ss;
     _SP = tasks[tswitch].sp;
   enable();
@@ -162,8 +162,8 @@ void interrupt multitask(void)
 /*-------------------------------------------------------------------------*/
 /*   make_task()                                                           */
 /*                                                                         */
-/*   Returns false if the task cannot be added to the task queue.          */
-/* Otherwise, it returns true.                                             */
+/*   Retorna false se uma tarefa nao pode ser adicionada na fila.          */
+/* De outra maneira, retorna true.                                         */
 /*-------------------------------------------------------------------------*/
 int make_task(taskptr task,
 	      unsigned stck,
@@ -175,23 +175,23 @@ int make_task(taskptr task,
     return 0;
 
   disable();
-    /* allocate space for the task */
+    /* Aloca espaço para a tarefa*/
     tasks[id].stck = malloc(stck + sizeof(struct int_regs));
     r = (struct int_regs *) tasks[id].stck + stck -  sizeof(struct int_regs);
 
-    /* initialize task stack */
+    /* inicializa a tareva */
     tasks[id].sp = FP_OFF((struct int_regs far *) r);
     tasks[id].ss = FP_SEG((struct int_regs far *) r);
 
-    /* set up new task's CS and IP registers */
+    /* seta os registradores CS e IP da nova tarefa */
     r->cs = FP_SEG(task);
     r->ip = FP_OFF(task);
 
-    /* set up DS and ES */
+    /* seta os registratores  DS e ES */
     r->ds = _DS;
     r->es = _DS;
 
-    /* enable interrupts */
+    /* liga as interrupções */
     r->flags = 0x200;
 
     tasks[id].status = READY;
@@ -203,8 +203,9 @@ int make_task(taskptr task,
 /*-------------------------------------------------------------------------*/
 /*   free_all()                                                            */
 /*                                                                         */
-/*   Free all stack space. This function should not be called by your      */
-/* program                                                                 */
+/*   Libera todo espaço da pilha. Esta função nao deve ser chamada         */
+/* pelo seu programa                                                       */
+/*                                                                         */
 /*-------------------------------------------------------------------------*/
 void free_all(void)
 {
@@ -224,7 +225,7 @@ void free_all(void)
 /*-------------------------------------------------------------------------*/
 /*  kill_task()                                                            */
 /*                                                                         */
-/*  Kill a task (make its state DEAD)                                      */
+/*  Mata um processo/tarefa, o que muda seu status para DEAD              */
 /*-------------------------------------------------------------------------*/
 void kill_task(int id)
 {
@@ -239,7 +240,7 @@ void kill_task(int id)
 /*-------------------------------------------------------------------------*/
 /*   init_tasks()                                                          */
 /*                                                                         */
-/*   Initialize the task control structures                                */
+/*   Inicializa as estruturas de controle das tarefas                     */
 /*-------------------------------------------------------------------------*/
 void init_tasks(void)
 {
@@ -258,7 +259,7 @@ void init_tasks(void)
 /*-------------------------------------------------------------------------*/
 /*   stop_tasking()                                                        */
 /*                                                                         */
-/*   Stop tasking.                                                         */
+/*   Para tarefas                                                          */
 /*-------------------------------------------------------------------------*/
 void stop_tasking(void)
 {
@@ -269,7 +270,7 @@ void stop_tasking(void)
 /*-------------------------------------------------------------------------*/
 /*   mono_task()                                                           */
 /*                                                                         */
-/*   Execute only one task.                                                */
+/*  Executa apenas uma tarefa                                              */
 /*-------------------------------------------------------------------------*/
 void mono_task(void)
 {
@@ -281,8 +282,8 @@ void mono_task(void)
 /*-------------------------------------------------------------------------*/
 /*   resume_tasking()                                                      */
 /*                                                                         */
-/*   Resume multitasking all tasks. (Use to restart tasking after a call   */
-/* to mono_task().                                                         */
+/*   Retorna todas as tarefas em multitask (Usado para retornar uma tarefa */
+/*   depois de chamar mono_task().                                         */
 /*-------------------------------------------------------------------------*/
 void resume_tasking(void)
 {
@@ -293,7 +294,8 @@ void resume_tasking(void)
 /*-------------------------------------------------------------------------*/
 /*   all_dead(void)                                                        */
 /*                                                                         */
-/*  Return 1 if no tasks are ready to run; 0 if at least one task is READY */
+/*  retorna 1 se nenhuma tarefa possui status READ para iniciar.           */
+/*  0, se pelo menos uma tarefa esta pronta para iniciar                   */
 /*-------------------------------------------------------------------------*/
 int all_dead(void)
 {
@@ -309,7 +311,7 @@ int all_dead(void)
 /*-------------------------------------------------------------------------*/
 /*   check_sleepers()                                                      */
 /*                                                                         */
-/*   Decrement the sleep count of any sleeping tasks                       */
+/*   Decrementa o sleep count                                              */
 /*-------------------------------------------------------------------------*/
 void check_sleepers(void)
 {
@@ -327,11 +329,11 @@ void check_sleepers(void)
 }
 
 
-/*-------------------------------------------------------------------------*/
-/*   msleep()                                                              */
-/*                                                                         */
-/*   Stop execution of a task for a specified number of clock cycles.      */
-/*-------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------*/
+/*   msleep()                                                                  */
+/*                                                                             */
+/*   Para a execução de uma tarefa por um tempo determinado de ciclos de clock */
+/*-----------------------------------------------------------------------------*/
 void msleep(int ticks)
 {
   disable();
@@ -345,7 +347,7 @@ void msleep(int ticks)
 /*-------------------------------------------------------------------------*/
 /*   suspend()                                                             */
 /*                                                                         */
-/*   Suspend a task until resumed by another task                          */
+/*   Suspende uma tarefa enquanto nao retomada por outra                   */
 /*-------------------------------------------------------------------------*/
 void suspend(int id)
 {
@@ -359,7 +361,7 @@ void suspend(int id)
 /*-------------------------------------------------------------------------*/
 /*   resume()                                                              */
 /*                                                                         */
-/*   Restart a previously suspended task.                                  */
+/*   Reinicia uma tarefa previamente suspensa                                  */
 /*-------------------------------------------------------------------------*/
 void resume(int id)
 {
@@ -372,7 +374,7 @@ void resume(int id)
 /*-------------------------------------------------------------------------*/
 /*   set_semaphore                                                         */
 /*                                                                         */
-/*   Wait for a semaphore.                                                 */
+/*  Espera por um semaforo                                               */
 /*-------------------------------------------------------------------------*/
 void set_semaphore(unsigned *sem)
 {
@@ -381,8 +383,8 @@ void set_semaphore(unsigned *sem)
     {
       semblock(tswitch, sem);
       task_switch();
-      disable();	/* task switch will enable interrupts, so they need
-			   to be turned off again */
+      disable();	/* trocar tarefas vai ligar as interrupções, entao precisam ser
+      desligadas novamente*/
     }
     *sem = 1;
   enable();
@@ -392,7 +394,7 @@ void set_semaphore(unsigned *sem)
 /*-------------------------------------------------------------------------*/
 /*   clear_semaphore                                                       */
 /*                                                                         */
-/*   Release a semaphore.                                                  */
+/*    Libera um semaforo                                                   */
 /*-------------------------------------------------------------------------*/
 void clear_semaphore(unsigned *sem)
 {
@@ -408,8 +410,9 @@ void clear_semaphore(unsigned *sem)
 /*-------------------------------------------------------------------------*/
 /*   semblock()                                                            */
 /*                                                                         */
-/*   Set task to BLOCKED. This is an internal function not to be called by */
-/* your program.                                                           */
+/*   Seta uma tarefa para o status BLOCKED. Essa é uma função interna, não */
+/* chamada pelo seu programa.                                              */
+/*                                                                         */
 /*-------------------------------------------------------------------------*/
 void semblock(int id, unsigned *sem)
 {
@@ -421,8 +424,8 @@ void semblock(int id, unsigned *sem)
 /*-------------------------------------------------------------------------*/
 /*   restart()                                                             */
 /*                                                                         */
-/*   Restart a task that is waiting for the specified semaphore. This is   */
-/* an internal function not to be called by your program.                  */
+/*   Reinicia uma tarefa que estava esperando por um semaforo especifico.  */
+/* Essa é uma função interna não chamada pelo seu programa                 */
 /*-------------------------------------------------------------------------*/
 void restart(unsigned *sem)
 {
@@ -442,14 +445,14 @@ void restart(unsigned *sem)
 /*-------------------------------------------------------------------------*/
 /*   task_status()                                                         */
 /*                                                                         */
-/*   Display the state of all tasks. This function must NOT be called      */
-/* while multitasking is in effect.                                        */
+/*   Mostra os status de todas as tarefas. Essa função NAO deve ser chamada */
+/*enquanto esta no multitarefas.                                            */
 /*-------------------------------------------------------------------------*/
 void task_status(void)
 {
   register int i;
 
-  if(tasking)	/* cannot be used while multitasking */
+  if(tasking)	/* Não pode ser usado em multitarefas */
     return;
 
   printf("\n");
@@ -461,22 +464,22 @@ void task_status(void)
     switch(tasks[i].status)
     {
       case READY:
-	printf("READY\n");
+	printf("READY\n"); /*Mostra READY */
 	break;
       case RUNNING:
-	printf("RUNNING\n");
+	printf("RUNNING\n"); /* Mostra RUNNING*/
 	break;
       case BLOCKED:
-	printf("BLOCKED\n");
+	printf("BLOCKED\n"); /*mostra  BLOCKED*/
 	break;
       case SUSPENDED:
-	printf("SUSPENDED\n");
+	printf("SUSPENDED\n"); /* mostra SUSPENDED*/
 	break;
       case SLEEPING:
-	printf("SLEEPING\n");
+	printf("SLEEPING\n"); /*mostra SLEEPING*/
 	break;
       case DEAD:
-	printf("DEAD\n");
+	printf("DEAD\n"); /*mostra DEAD*/
 	break;
     }
   }
@@ -485,14 +488,14 @@ void task_status(void)
 
 /*-------------------------------------------------------------------------*/
 /*                                                                         */
-/*	Serialized and Reentrant I/O functions for the Multitasker         */
+/* Funções de entrada e saída serializadas e reentrant (???) para multitarefas*/
 /*                                                                         */
 /*-------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------*/
 /* void mputs(char *s)                                                     */
 /*                                                                         */
-/*   Serialized version of puts()                                          */
+/*   versão serializada de puts()                                          */
 /*-------------------------------------------------------------------------*/
 void mputs(char *s)
 {
@@ -503,7 +506,7 @@ void mputs(char *s)
 
 
 /*-------------------------------------------------------------------------*/
-/* 	Output a number                                                    */
+/* 	Saida de um numero                                                   */
 /*-------------------------------------------------------------------------*/
 void mputnum(int num)
 {
@@ -514,7 +517,7 @@ void mputnum(int num)
 
 
 /*-------------------------------------------------------------------------*/
-/* 	Serialized version of getche()                                     */
+/* 	Versao serializada de  getche()                                     */
 /*-------------------------------------------------------------------------*/
 char mgetche(void)
 {
@@ -530,8 +533,8 @@ char mgetche(void)
 /*-------------------------------------------------------------------------*/
 /* void mxyputs()                                                          */
 /*                                                                         */
-/*   Output a string at specified X, Y coordinates. This function is       */
-/* reentrant and may be called by any task at any time.                    */
+/*   mostra uma string especifica X, Y coordenadas. Essa função é reentrada       */
+/* e pode ser chamada por qualquer tarefa em qualquer hora                    */
 /*-------------------------------------------------------------------------*/
 void mxyputs(int x, int y, char *str)
 {
@@ -551,32 +554,32 @@ void moutchar(int x, int y, char ch)
 
   v = vid_mem;
 
-  v += (y*160) + x*2;	/* compute char loc */
-  *v++ = ch;		/* write the character */
-  *v = 7;		/* normal character */
+  v += (y*160) + x*2;	/* calcula o char loc */
+  *v++ = ch;		/* escreve o caracter */
+  *v = 7;		/* caracter normal */
 }
 
 /*-------------------------------------------------------------------------*/
-/*	Initialize the video subsystem                                     */
+/*	inicializa os sub-sistemas de video                                 */
 /*-------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------*/
 /* void video_mode()                                                       */
 /*                                                                         */
-/*   Return the current video mode                                         */
+/*   retorna o modo de video atual                                         */
 /*-------------------------------------------------------------------------*/
 video_mode(void)
 {
   union REGS r;
 
-  r.h.ah = 15;	/* get video mode */
+  r.h.ah = 15;	/* get modo de video */
   return int86( 0x10, &r, &r) & 255;
 }
 
 /*-------------------------------------------------------------------------*/
 /* void set_vid_mem()                                                      */
 /*                                                                         */
-/*   Set the vid_mem pointer to the start of video memory                  */
+/* Seta o ponteiro vid_mem para o inicio da memoria de video               */
 /*-------------------------------------------------------------------------*/
 void set_vid_mem(void)
 {
@@ -585,11 +588,11 @@ void set_vid_mem(void)
   vmode= video_mode();
   if((vmode!=2) && (vmode!=3) && (vmode!=7))
   {
-    printf("/n Video must be in 80 column text mode");
+    printf("/n Video must be in 80 column text mode"); /*Video deve estar no modo de texto de 80 colunas*/
     exit(1);
   }
 
-  /* set proper address of video RAM */
+  /* define o enderaçamento do video RAM */
   if(vmode==7)
     vid_mem = (char far *) MK_FP(0xB000, 0);
   else
