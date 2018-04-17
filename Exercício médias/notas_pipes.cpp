@@ -1,74 +1,149 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <time.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <pthread.h>
-#define TAM_PIPE 20
+#include <unistd.h>
+#include <wait.h>
+#include <iostream>
 
-#ifndef N_NOTAS
-    #define N_NOTAS  200
-#endif
+   #define N_NOTAS  200
+   #define  N_BLOCO 10
+
+
+using namespace std;
+
+struct notas{
+	int id_nota;
+	float nota1;
+	float nota2;
+	float nota3;
+	float media;
+	pid_t pid;
+};
+
+
+/*pipes*/
+int numero_processos = N_NOTAS / N_BLOCO;
+int fd[numero_processos][2];
+
+void ler_arq(struct notas notas[]);
+
+void print(struct notas notas[]);
+
+void calcular_media(struct notas notas[]);
+
+void media_fork(struct notas notas[]);
+
+
+int comparacao(const void *a, const void *b);
+
+
 
 int main(){
 
+	struct notas notas[N_NOTAS];
 
-    printf("\n\nMedia com Pipes\n");
+	ler_arq(notas);
 
-    int n_processos = N_NOTAS / TAM_PIPE;/* variavel para numeros de processos necessarios para determinado bloco de notas */
-    int fd2[n_processos][2];/* vetor para leitura e escrita em pipe */
-    int j = 0;
-    int k = 0;
-        int i = 0;
-    int ids;
-    int n1 = 0;
-    int n2 = 0;
-    int n3 = 0;
-    int nota1[N_NOTAS];
-FILE *arq;
-    pid_t pids[n_processos];
-    while(i < n_processos){/* numero de vezes por processos */
-        pipe(fd2[i]); /*cria o pipe */
-        pids[i] = fork();/* cria um processo */
-        if(pids[i] == 0){/* se filho */
-            float media[TAM_PIPE];
-            close(fd2[i][0]);/* fecha leitura do pipe */
-            int a = 0;
-            arq = fopen("notas.lst", "r");
-        if(arq == NULL){
-                printf("Erro no arquivo\n");
-                exit(-1);
-            }
+	 pipes(&fd);
+	 print(notas);
 
-            printf("\nCalculando media de %d ate %d\n", k, k + TAM_PIPE);/* intervalo de calculo atual */
-            for(j = k; j < (k + TAM_PIPE); j++){/* intervalo das notas */
-                fseek(arq,j * 19,SEEK_SET);/* funcao que desloca ponteiro para determinado local no arquivo */
-                fscanf( arq, "%d %f %f %f\n", &ids, &n1, &n2, &n3);/* le linha do arquivo formatada */
-                   if((n1 + n2) >= 14.0){
-                    media[a] = (n1 + n2) / 2.0;
-                }else{
-                    media[a] = (n1 + n2 + n3) / 3.0;
+
+
+	return 0;
+}
+float pipes(){
+    pipe(fd[numero_processos]);
+    pid_t pid[numero_processos];
+    float medias[numero_processos];
+
+    int i = j = k = z = 0;
+
+    while(i < numero_processos){/*enquanto i menor que o numero de pipes do bloco*/
+        pipe(fd[i]); /* Cria o pipe antes do fork para processos pai e filho terem os mesmos descritores de arquivo */
+		pid[i] = fork(); /* Crio o processo filho */
+        if(pid[i] == 0){ //é filho
+            close(fd[i][0]); // fecha leitura do pipe
+			
+			cout << "Calcula media de " << k << "ate " << k+N_BLOCO << endl;
+            for(j = k; j < k + N_BLOCO; j++){
+                if (notas[i].nota1 +  notas[i].nota2 >= 14.0){
+                    media  = ( ( notas[i].nota1 + notas[i].nota2 ) / 2.0);
+                }else {
+                    media = ( notas[i].nota1 + notas[i].nota2 + notas[i].nota3 ) / 3.0;
                 }
-                printf("%d  %.1f\n ",ids,  media[a]);
-                a++;
+				cout << notas[i].id_nota << " " << pid[i] << " " << media << endl;
+                medias[z] = media;
+                z++;
             }
-            fclose(arq);
-            write(fd2[i][1], &media, sizeof(media));/* escreve vetor com resultados no pipe */
-            close(fd2[i][1]);/* fecha pipe de escrita */
-            exit(0); /* retorna ao pai */
-        }else if(pids[i] > 0){/* se processo pai */
-            float medias[TAM_PIPE];
-            close(fd2[i][1]);/* fecho a escrita */
-            int m;
-            read(fd2[i][0], &medias, sizeof(medias));/* le a media do pipe */
-            for(j = 0, m = k; j < TAM_PIPE; j++, m++){
-                nota1[m] = medias[j];
-            }
-            close(fd2[i][0]);/* fecho a leitura */
+            write(fd[i][1], &medias, sizeof(medias));
+            close(fd[i][1]);
+            exit(0);
         }
-        i++;
-        k += TAM_PIPE;
+
+            float medias_1[numero_processos];
+               if(pid[i] > 0){ // se pai
+                   close(fd[i][1]); // fecha escrita
+                   read(fd[i][0], &medias_1, sizeof(medias_1));
+
+                   int m = 0;
+
+                   for(j = 0, m = k; j < numero_processos; j++, m++){
+                        notas[m].media = medias_1[j];
+						
+					}
+                }
+                i++;
+                k += N_BLOCO;
+        }
+
+
     }
 }
+
+
+void print(struct notas notas[]){
+	int i = 0;
+	while ( i < N_NOTAS ){
+		cout << "\n" << notas[i].id_nota << " " << notas[i].nota1 << " "
+		     << notas[i].nota2 << " " << notas[i].nota3 << " "
+		     << notas[i].media << endl;
+		i++;
+	}
+}
+
+
+void ler_arq(struct notas notas[]){
+	int   i;
+
+	FILE *fp; /* Ponteiro para o arquivo com as notas */
+	char nome[20];
+	cout << "Digite o nome do arquivo: ";
+	cin >> nome;
+
+	fp = fopen(nome, "r");
+
+    while(!feof(fp)){
+		fscanf(fp, "%d %f %f  %f", &notas[i].id_nota,
+                                   &notas[i].nota1,
+                                   &notas[i].nota2,
+                                   &notas[i].nota3);
+		/*cout << notas[i].id_nota
+                                    << " " << notas[i].nota1
+                                  << " "<< notas[i].nota2
+	                          << " " << notas[i].nota3 << endl;*/
+	i++;
+    }
+	fclose(fp);
+}
+
+int comparacao(const void *valorA, const void *valorB){
+	if((*(struct notas*)valorA).media > (*(struct notas*)valorB).media) /* Se o valor A for maior que o valor B, ele vem antes */
+		return -1;
+	else if( (*(struct notas*)valorA).media < (*(struct notas*)valorB).media ) /* Se for menor que B */
+		return 1;
+    else /* Se for igual a B */
+		return 0;
+}
+
+
+
+
