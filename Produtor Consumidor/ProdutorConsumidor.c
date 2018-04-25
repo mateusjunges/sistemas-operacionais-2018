@@ -1,9 +1,12 @@
-// arquivo: prodcons.c
+// arquivo: ProdutorConsumidor.cpp
 // descricao: Programa produtor-consumidor com mutex
 // Utiliza a biblioteca pthreads.
-// para compilar:  cc -o phtread pthread.c -lpthread
+
 
 #include <pthread.h>
+#include <unistd.h>
+#include <stdio.h>
+
 
 #define  FALSE 0
 #define  TRUE  1
@@ -28,7 +31,7 @@ void produtor(int id)
 	printf("Inicio produtor %d \n",id);
 	while (i < 10)
 	    {
-            //produzir item
+            //produz item
 	    item = i + (id*1000);
 
             do
@@ -42,7 +45,7 @@ void produtor(int id)
 		    }
 		} while (aguardar == TRUE);
 
-	    //inserir item
+	    //insere item
             printf("Produtor %d inserindo item %d\n", id, item); 
             buffer = item;
 	    estado = BUFFERCHEIO;
@@ -62,7 +65,7 @@ void consumidor(int id)
 	printf("Inicio consumidor %d \n",id);
 	while (1)
 	    {
-            // retirar item da fila
+            // retira item
             do
 		{
                 pthread_mutex_lock(&mutex);
@@ -77,7 +80,7 @@ void consumidor(int id)
 	    estado = BUFFERVAZIO;
 	    pthread_mutex_unlock(&mutex);
 
-	    // processar item
+	   
             printf("Consumidor %d consumiu item %d\n", id, item); 
 
  	    sleep(2);
