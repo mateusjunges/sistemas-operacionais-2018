@@ -6,11 +6,11 @@
 #include <semaphore.h>
  
 #define N 5 // define que N será igual a 5 
-#define LEFT (i+N-1)%N
-#define RIGHT (i+1)%N
-#define THINKING 0
-#define HUNGRY 1
-#define EATING 2
+#define LEFT (i+N-1)%N //esquerda
+#define RIGHT (i+1)%N //direita
+#define THINKING 0 // código usado para pensando
+#define HUNGRY 1 // código que usei para filósofo com fome
+#define EATING 2 // Código que usei para comendo
 
 /* Funções utilizadas no código */
 void mostrar();
@@ -33,26 +33,26 @@ sem_t sem_fil[N];
 //funcao que mostra o estado dos N filosofos
 void mostrar(){
    for(i=1; i<=N; i++){
-       if(state[i-1] == THINKING){
+       if(state[i-1] == THINKING){ // se status pensando
           printf("O filosofo %d esta pensando!\n", i);
        }
-       if(state[i-1] == HUNGRY){
+       if(state[i-1] == HUNGRY){ // se status com fome
           printf("O filosofo %d esta com fome!\n", i);
        }
-       if(state[i-1] == EATING){
+       if(state[i-1] == EATING){ // se status comendo
           printf("O filosofo %d esta comendo!\n", i);
        }
    }
    printf("\n");
 }
  
-//acao do filosofo
+//acao tomada pelo filosofo
 void *acao_filosofo(void *j){
    int i= *(int*) j;
    while(1){  
     pensar(i);
     pegar_garfo(i);
-    comer(i);
+    comer(i); 
     por_garfo(i);
    }
  
@@ -60,7 +60,7 @@ void *acao_filosofo(void *j){
  
 void pegar_garfo(int i){
    sem_wait(&mutex);
-   state[i]=HUNGRY;
+   state[i]=HUNGRY; // status muda para com fome
    mostrar();
    test(i);
    sem_post(&mutex);
@@ -69,7 +69,7 @@ void pegar_garfo(int i){
  
 void por_garfo(int i){
    sem_wait(&mutex);
-   state[i]=THINKING;
+   state[i]=THINKING; // status muda para pensando
    mostrar();
    test(LEFT);
    test(RIGHT);
