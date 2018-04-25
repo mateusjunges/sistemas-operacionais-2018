@@ -5,13 +5,14 @@
 #include <pthread.h>
 #include <semaphore.h>
  
-#define N 5
+#define N 5 // define que N será igual a 5 
 #define LEFT (i+N-1)%N
 #define RIGHT (i+1)%N
 #define THINKING 0
 #define HUNGRY 1
 #define EATING 2
 
+/* Funções utilizadas no código */
 void mostrar();
 void *acao_filosofi(void *j);
 void pegar_garfo(int i);
@@ -138,12 +139,12 @@ int main(){
        }
     }
  
-//faz um join nas threads
+//join nas threads
  
         for(i=0; i<N; i++){
        res = pthread_join(thread[i],&thread_result);
        if(res!=0){
-          perror("Erro ao fazer join nas threads!");
+          perror("Ocorreu um erro ao fazer o join nas threads!");
           exit(EXIT_FAILURE);
        }
     }
