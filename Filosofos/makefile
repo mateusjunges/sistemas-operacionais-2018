@@ -1,2 +1,2 @@
 filosofos:
-	g++ -o filosofos filosofos.cpp -l pthread -std=c99
+	gcc -o filosofos filosofos.c -l pthread -std=c99

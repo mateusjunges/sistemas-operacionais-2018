@@ -88,14 +88,14 @@ void test(int i){
 //a thread(filosofo) espera um tempo aleatoria pensando ou comendo
 void pensar(int i){
  
-   float_rand=0.001*random();
+   float_rand=0.001*rand();
    int_rand=float_rand;
    usleep(int_rand);
 }
  
 void comer(int i){
  
-   float_rand=0.001*random();
+   float_rand=0.001*rand();
    int_rand=float_rand;
    usleep(int_rand);
 }
