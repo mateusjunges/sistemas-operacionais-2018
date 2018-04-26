@@ -198,7 +198,8 @@ int main( void ){
 	
 	
     inicio = clock();									
-    float aux2 = 0.0;										
+    float aux2 = 0.0;		
+	int nd, aux;
     nd = open( "notas.lst", O_WRONLY | O_CREAT | O_TRUNC, 0666 );
   	if( nd < 0 ) {											
     	printf( "Erro na criacao do arquivo\n" );			
