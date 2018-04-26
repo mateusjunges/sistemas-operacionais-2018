@@ -56,9 +56,7 @@ int main( void ){
 
 	inicio = clock();
 	i = 0;
-	printf("\n=======================\n");
-	printf("  Media com Processos  \n");
-	printf("=======================\n");
+	printf("\n\n\nMedia com Processos\n");
 	while(i < N_NOTAS){
         pids[i] = fork();
 		if(pids[i] == 0){
@@ -90,7 +88,7 @@ int main( void ){
             	nota[i] = (float)(WEXITSTATUS(status)/10.0);
                 printf("\tFilho => %i retornou sua media = %.1f\n" , pids[i], nota[i]);
             }else
-                printf("\nFilho %d nao terminou bem\n", pids[i]);
+                printf("\nFilho %d nao terminou normalmente\n", pids[i]);
         }
         i++;
     }

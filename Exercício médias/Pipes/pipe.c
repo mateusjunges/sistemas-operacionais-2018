@@ -24,7 +24,7 @@ int main( void ){
   	FILE *arq;
   	fd = open("nota.lst",O_WRONLY | O_CREAT| O_TRUNC, 0666);
   	if( fd < 0 ) {
-    	printf("Erro, problema no arquivo!!\n" );
+    	printf("ERRO NO ARQUIVO\n" );
     	exit( fd );
   	}
   	for( i = 0; i < N_NOTAS; ++i ) {
@@ -50,11 +50,10 @@ int main( void ){
   	}
   	close( fd );
 
-//==============================================================================================pipes
-  	inicio = clock();
-  	printf("\n=======================\n");
-	printf("    Media com Pipes  \n");
-	printf("=======================\n");
+	inicio = clock();
+
+	printf("\n\n\nMedia com Pipe\n");
+	
     n_processos = N_NOTAS / TAM_PIPE;
 	int fd2[n_processos][2];
 	int j = 0, k = 0;
@@ -67,9 +66,9 @@ int main( void ){
             close(fd2[i][0]);
             int a = 0;
             arq = fopen("nota.lst", "r");
-			if(arq == NULL){ printf("Erro no arquivo\n");}
+			if(arq == NULL){ printf("ERRO NO ARQUIVO\n");}
 
-			printf("\tCalculando media de %i ate %i\n", k, k + TAM_PIPE);
+			printf("\n\tCalculando media no intervalo de %i ate %i\n\n", k, k + TAM_PIPE);
 			for(j = k; j < (k + TAM_PIPE); j++){
 				fseek(arq,j * 19,SEEK_SET);
 				fscanf( arq, "%i %f %f %f\n", &ids, &n1, &n2, &n3);

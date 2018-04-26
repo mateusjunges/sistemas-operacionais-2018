@@ -1,2 +1,2 @@
 processos:
-	gcc processo.c -o mediaProcessos -l pthread
+	gcc processo.c -o mediaProcessos

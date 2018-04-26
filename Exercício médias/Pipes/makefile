@@ -1,3 +1,3 @@
 mediapipes:
-	gcc -o mediaPipes pipe.c -l pthread
+	gcc -o mediaPipes pipe.c
 

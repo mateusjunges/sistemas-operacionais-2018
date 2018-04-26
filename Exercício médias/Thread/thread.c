@@ -6,12 +6,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <pthread.h>
-
+#define TAM_PIPE 10
 #ifndef N_NOTAS
     #define N_NOTAS  50
 #endif
 
 int b = 0;
+int j = 0;
 float notas2[N_NOTAS];
 void *thread(){
 	FILE *arq = fopen("nota.lst", "r");
@@ -39,7 +40,7 @@ int main( void ){
 	int i, fd, ids, status, n_processos;
   	float n1, n2, n3, media;
   	clock_t inicio;
-  	double tempo[5];
+  	double tempo;
   	pid_t pids[N_NOTAS];
   	float nota[N_NOTAS], nota1[N_NOTAS];
   	FILE *arq;
@@ -76,8 +77,8 @@ int main( void ){
 
 /*THREADS */
 	inicio = clock();
-	printf("\nMedia com Threads  \n");
-
+	printf("\n\n\nMedia Threads  \n");
+	n_processos = N_NOTAS/TAM_PIPE;
 	pthread_t threads[n_processos];
 	for(i = 0; i < n_processos; i++){
 		pthread_create(&threads[i], NULL, thread, NULL);
@@ -87,7 +88,7 @@ int main( void ){
     }
     tempo = (clock() - inicio) / (double)CLOCKS_PER_SEC;
     for(i = 0; i < N_NOTAS; i++){
-    	printf("\t%i %.1f\n",i, notas2[i]);
+    	printf("\tMedia: %i =>  %.1f\n",i, notas2[i]);
     }
 
 
