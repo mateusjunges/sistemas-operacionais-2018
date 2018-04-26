@@ -12,7 +12,7 @@
 #define  TRUE  1
 
 
-// Declaracao das variaveis de condicao:
+
 pthread_mutex_t  mutex;
 
 //Buffer
@@ -90,23 +90,22 @@ void consumidor(int id)
 
 int main()
 { 
-	pthread_t prod1;
-	pthread_t prod2;
-	pthread_t prod3;
-	pthread_t cons1;
-	pthread_t cons2;
+	pthread_t prod1; //thread produtor 1
+	pthread_t prod2; //thread produtor 2
+	pthread_t prod3; //thread produtor 3
+	pthread_t cons1; //thread consumidor 1 
+	pthread_t cons2; //thread consumidor 2
 
-	printf("Programa Produtor-Consumidor\n");
+	printf("Produtor Consumidor - Sistemas Operacionais 2018\n");
 
-	printf("Iniciando variaveis de sincronizacao.\n");
 	pthread_mutex_init(&mutex,NULL);
 
-        printf("Disparando threads produtores\n");
+        printf("Threads produtores\n");
 	pthread_create(&prod1, NULL, (void*) produtor,1);
 	pthread_create(&prod2, NULL, (void*) produtor,2);
 	pthread_create(&prod3, NULL, (void*) produtor,3);
 
-        printf("Disparando threads consumidores\n");
+        printf("Threads consumidores\n");
 	pthread_create(&cons1, NULL, (void*) consumidor,1);
 	pthread_create(&cons2, NULL, (void*) consumidor,2);
 
