@@ -125,7 +125,7 @@ int main( void ){
   	inicio = clock();
   	printf("\n=======================\n");			
 	printf("    Media com Pipes  \n");									
-	printf("=======================\n",);	
+	printf("=======================\n");	
     n_processos = N_NOTAS / TAM_PIPE;										
 	int fd2[n_processos][2];												
 	int j = 0, k = 0;														
