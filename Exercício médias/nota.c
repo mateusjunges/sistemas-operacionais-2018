@@ -6,7 +6,7 @@
 #include <sys/types.h>								
 #include <sys/wait.h>								
 #include <pthread.h>								
-#define TAM_PIPE 100								
+#define TAM_PIPE 10								
 #ifndef N_NOTAS										
 #define N_NOTAS  50									
 #endif
