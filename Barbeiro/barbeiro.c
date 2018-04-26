@@ -1,8 +1,8 @@
-#include "stdio.h"
-#include "unistd.h"
-#include "stdlib.h"
-#include "pthread.h"
-#include "semaphore.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 #define CADEIRAS 5                /* número de cadeiras para os clientes à espera */
 #define TRUE 1
@@ -12,9 +12,8 @@ sem_t barbeiro;                  /* número de barbeiros à espera de clientes */
 sem_t mutex;                    /* para exclusão mútua */
 int esperando = 0;                /* clientes que estão esperando */
 
-/* protótipos */
-void* barbeiro(void *arg);
-void* cliente(void *arg);
+
+
 void cortando();
 void cliente_chegou();
 void sendoatendido();
