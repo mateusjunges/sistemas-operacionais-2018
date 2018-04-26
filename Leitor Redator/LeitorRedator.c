@@ -1,36 +1,31 @@
-//
-//  LeitorRedator.c
-//
-// gcc -o leitorredador leitorredator.c -l pthread -std=c99
-//
-
 #include <stdio.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 pthread_mutex_t no_wait, no_acc, counter;
-int no_of_readers=0;
+int no_of_readers=0; //  número de leitores
 
 void reader(void *arg)
 {
    int id=*((int*)arg);
-   printf("reader %d started\n", id);
+   printf("Leitor %d iniciou\n", id);
    while(1)
    {
-      sleep(rand()%4);
+      sleep(rand()%4); //dorme por um tempo
       check_and_wait(id);
-      read(id);
+      read(id); //lê id
    }
 }
 
-void writer(void* arg)
+void writer(void* arg) // escritor
 {
    int id=*((int*)arg);
-   printf("writer %d started\n", id);
+   printf("Escritor %d iniciou\n", id);
    while(1)
    {
       sleep(rand()%5);
-      check_and_wait_if_busy(id);
-      write(id);
+      check_and_wait_if_busy(id); // verifica e espera se ocupado
+      write(id); //escreve
    }
 }
 
@@ -38,15 +33,15 @@ void writer(void* arg)
 void check_and_wait_if_busy(int id)
 {
    if(pthread_mutex_trylock(&no_wait)!=0){
-      printf("Writer %d Waiting\n", id);
+      printf("scritor %d esperando\n", id);
       pthread_mutex_lock(&no_wait);
    }
 }
 
 void check_and_wait(int id)
 {
-   if(pthread_mutex_trylock(&no_wait)!=0){
-      printf("Reader %d Waiting\n", id);
+   if(pthread_mutex_trylock(&no_wait)!=0){/*	tenta bloquear, e se ainda n 							estiver bloqueado, faz o 							bloqueio*/
+      printf("Leitor %d esperando\n", id);
       pthread_mutex_lock(&no_wait);
    }
 }
@@ -54,18 +49,18 @@ void check_and_wait(int id)
 void read(int id)
 {
    pthread_mutex_lock(&counter);
-   no_of_readers++;
+   no_of_readers++;//incrementa o número de leitores
    pthread_mutex_unlock(&counter);
    if(no_of_readers==1)
       pthread_mutex_lock(&no_acc);
    pthread_mutex_unlock(&no_wait);
-   printf("reader %d reading...\n", id);
-   sleep(rand()%5);
-   printf("reader %d finished reading\n", id);
+   printf("Leitor %d lendo...\n", id);
+   sleep(rand()%5); //dormir por um tempo
+   printf("Leitor %d terminou de ler\n", id);
    pthread_mutex_lock(&counter);
-   no_of_readers--;
+   no_of_readers--; //decrementa o número de leitores
    pthread_mutex_unlock(&counter);
-   if(no_of_readers==0)
+   if(no_of_readers==0)//se o número de leitores igual a 0
       pthread_mutex_unlock(&no_acc);
 }
 
@@ -73,9 +68,9 @@ void write(int id)
 {
    pthread_mutex_lock(&no_acc);
    pthread_mutex_unlock(&no_wait);
-   printf("Writer %d writing...\n", id);
+   printf("Esritor %d escrevendo...\n", id);
    sleep(rand()%4+2);
-   printf("Writer %d finished writing\n", id);
+   printf("Escritor %d escrevendo\n", id);
    pthread_mutex_unlock(&no_acc);
 }
 
@@ -88,8 +83,8 @@ int main(int argc, char* argv[])
    for(int i=0; i<5; i++)
    {
       ids[i]=i+1;
-      pthread_create(&R[i], NULL, (void*)&reader, (void*)&ids[i]);
-      pthread_create(&W[i], NULL, (void*)&writer, (void*)&ids[i]);
+      pthread_create(&R[i], NULL, (void*)&reader, (void*)&ids[i]); //cria leitor
+      pthread_create(&W[i], NULL, (void*)&writer, (void*)&ids[i]); /* cria 									escritor */
    }
    pthread_join(R[0], NULL);
    exit(0);
