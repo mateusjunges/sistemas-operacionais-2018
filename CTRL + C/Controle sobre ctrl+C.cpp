@@ -15,7 +15,7 @@ bool condicao = true;
 int main(){
 
         while( condicao ){
-            signal( SIGINT, SIG_IGN);
+            signal( SIGINT, sig_handler);
                     /*
                             A função signal especifica a
                             "handler routine" a ser executada
