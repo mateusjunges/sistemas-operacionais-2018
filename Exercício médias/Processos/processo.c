@@ -12,6 +12,7 @@
 #endif
 
 int b = 0;
+int j = 0;
 float notas2[N_NOTAS];
 
 
@@ -87,9 +88,9 @@ int main( void ){
             waitpid(pids[i], &status, 0 );
             if( WIFEXITED(status) ){
             	nota[i] = (float)(WEXITSTATUS(status)/10.0);
-                printf("\tFilho => %i retornou Media = %.1f\n" , pids[i], nota[i]);
+                printf("\tFilho => %i retornou sua media = %.1f\n" , pids[i], nota[i]);
             }else
-                printf("\nFilho %d nao terminou bem!!\n", pids[i]);
+                printf("\nFilho %d nao terminou bem\n", pids[i]);
         }
         i++;
     }
