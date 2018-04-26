@@ -164,7 +164,8 @@ int main( void ){
             for(j = 0, m = k; j < TAM_PIPE; j++, m++){						
             	nota1[m] = medias[j];										
     		}
-    		close(fd2[i][0]);												
+    		close(fd2[i][0]);
+		}
         i++; 																
         k += TAM_PIPE;       												
     }
