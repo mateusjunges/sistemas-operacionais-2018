@@ -132,6 +132,6 @@ int main( void ){
   	close( nd );
   	int resp = remove("nota.lst");
 
-	printf("\NTempo: %.8f\n", tempo[2]);
+	printf("\nTempo: %.8f\n", tempo);
 	return 0;
 }
