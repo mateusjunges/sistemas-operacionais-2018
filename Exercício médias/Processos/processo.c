@@ -17,17 +17,17 @@ float notas2[N_NOTAS];
 
 
 int main( void ){
-	int i, fd, ids, status, n_processos;
+	int i, fileDescriptor, ids, status, numeroDeProcesso;
   	float n1, n2, n3, media;
-  	clock_t inicio;
-  	double tempo;
+  	clock_t startedAt;
+  	double time_exec;
   	pid_t pids[N_NOTAS];
   	float nota[N_NOTAS], nota1[N_NOTAS];
   	FILE *arq;
-  	fd = open("nota.lst",O_WRONLY | O_CREAT| O_TRUNC, 0666);
-  	if( fd < 0 ) {
+  	fileDescriptor = open("nota.lst",O_WRONLY | O_CREAT| O_TRUNC, 0666);
+  	if( fileDescriptor < 0 ) {
     	printf("ERRO NO ARQUIVO\n" );
-    	exit( fd );
+    	exit( fileDescriptor );
   	}
   	for( i = 0; i < N_NOTAS; ++i ) {
     	n1 = rand()%100/10.0;
@@ -37,24 +37,24 @@ int main( void ){
     		n3 = 0.0;
     	}
     	if(i < 10){
-    		dprintf( fd, "     %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "     %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 10 && i < 100){
-    		dprintf( fd, "    %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "    %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 100 && i < 1000){
-    		dprintf( fd, "   %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "   %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 1000 && i < 10000){
-    		dprintf( fd, "  %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "  %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 10000 && i < 100000){
-    		dprintf( fd, " %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, " %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 100000 && i < 1000000){
-    		dprintf( fd, "%d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "%d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}
   	}
-  	close( fd );
+  	close( fileDescriptor );
 
 
 
-	inicio = clock();
+	startedAt = clock();
 	i = 0;
 	printf("\n\n\nMedia com Processos\n");
 	while(i < N_NOTAS){
@@ -92,7 +92,7 @@ int main( void ){
         }
         i++;
     }
-  	tempo = (clock() - inicio) / (double)CLOCKS_PER_SEC;
+  	time_exec = (clock() - startedAt) / (double)CLOCKS_PER_SEC;
 
 
 
@@ -106,7 +106,7 @@ int main( void ){
     nd = open( "notas.lst", O_WRONLY | O_CREAT | O_TRUNC, 0666 );
   	if( nd < 0 ) {
     	printf( "ERRO AO CRIAR O ARQUIVO\n" );
-    	exit( fd );
+    	exit( fileDescriptor );
   	}
 	for(i = 0; i < N_NOTAS; i++){
 		for(j = 0; j < N_NOTAS; j++){
@@ -126,9 +126,9 @@ int main( void ){
 		nota1[aux] = 0.0;
 	}
   	close( nd );
-  	int resp = remove("nota.lst");
+  	int resposta = remove("nota.lst");
 
-	printf("\nProcessos: %.8f\n", tempo);
+	printf("\nProcessos: %.8f\n", time_exec);
 
 	return 0;
 }

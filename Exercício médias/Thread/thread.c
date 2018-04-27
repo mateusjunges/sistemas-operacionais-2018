@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <pthread.h>
-#define TAM_PIPE 10
+#define TAMANHOPIPE 10
 #ifndef N_NOTAS
     #define N_NOTAS  50
 #endif
@@ -22,7 +22,7 @@ void *thread(){
 		printf("ERRO NO ARQUIVO\n");
 		exit(1);
 	}
-	for(i = k; i < (k + TAM_PIPE); i++){
+	for(i = k; i < (k + TAMANHOPIPE); i++){
 		fseek(arq, i * 19,SEEK_SET);
 		fscanf( arq, "%i %f %f %f\n", &ids, &n1, &n2, &n3);
    		if((n1 + n2) >= 14.0){
@@ -32,23 +32,23 @@ void *thread(){
 		}
 	}
 	fclose(arq);
-	b += TAM_PIPE;
+	b += TAMANHOPIPE;
     pthread_exit(NULL);
 }
 
 int main( void ){
-	int i, fd, ids, status, n_processos;
+	int i, fileDescriptor, ids, status, n_processos;
   	float n1, n2, n3, media;
-  	clock_t inicio;
-  	double tempo;
+  	clock_t startedAt;
+  	double time_exec;
   	pid_t pids[N_NOTAS];
   	float nota[N_NOTAS], nota1[N_NOTAS];
   	FILE *arq;
 
-  	fd = open("nota.lst",O_WRONLY | O_CREAT| O_TRUNC, 0666);
-  	if( fd < 0 ) {
+  	fileDescriptor = open("nota.lst",O_WRONLY | O_CREAT| O_TRUNC, 0666);
+  	if( fileDescriptor < 0 ) {
     	printf("ERRO NO ARQUIVO\n" );
-    	exit( fd );
+    	exit( fileDescriptor );
   	}
   	for( i = 0; i < N_NOTAS; ++i ) {
     	n1 = rand()%100/10.0;
@@ -58,27 +58,27 @@ int main( void ){
     		n3 = 0.0;
     	}
     	if(i < 10){
-    		dprintf( fd, "     %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "     %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 10 && i < 100){
-    		dprintf( fd, "    %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "    %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 100 && i < 1000){
-    		dprintf( fd, "   %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "   %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 1000 && i < 10000){
-    		dprintf( fd, "  %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "  %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 10000 && i < 100000){
-    		dprintf( fd, " %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, " %d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}else if(i >= 100000 && i < 1000000){
-    		dprintf( fd, "%d %.1f %.1f %.1f\n", i, n1, n2, n3 );
+    		dprintf( fileDescriptor, "%d %.1f %.1f %.1f\n", i, n1, n2, n3 );
     	}
   	}
-  	close( fd );
+  	close( fileDescriptor );
 
 
 
 /*THREADS */
-	inicio = clock();
+	startedAt = clock();
 	printf("\n\n\nMedia Threads  \n");
-	n_processos = N_NOTAS/TAM_PIPE;
+	n_processos = N_NOTAS/TAMANHOPIPE;
 	pthread_t threads[n_processos];
 	for(i = 0; i < n_processos; i++){
 		pthread_create(&threads[i], NULL, thread, NULL);
@@ -86,29 +86,29 @@ int main( void ){
     for (i = 0; i < n_processos; i++){
     	pthread_join(threads[i], NULL);
     }
-    tempo = (clock() - inicio) / (double)CLOCKS_PER_SEC;
+    time_exec = (clock() - startedAt) / (double)CLOCKS_PER_SEC;
     for(i = 0; i < N_NOTAS; i++){
     	printf("\tMedia: %i =>  %.1f\n",i, notas2[i]);
     }
 
 
 
-    inicio = clock();
-    float aux2 = 0.0;
+    startedAt = clock();
+    float varAux = 0.0;
 	int nd, aux;
     nd = open( "notas.lst", O_WRONLY | O_CREAT | O_TRUNC, 0666 );
   	if( nd < 0 ) {
     	printf( "ERRO AO CRIAR O ARQUIVO\n" );
-    	exit( fd );
+    	exit( fileDescriptor );
   	}
 	for(i = 0; i < N_NOTAS; i++){
 		for(j = 0; j < N_NOTAS; j++){
-			if(nota1[j] > aux2){
+			if(nota1[j] > varAux){
 				aux = j;
-				aux2 = nota1[j];
+				varAux = nota1[j];
 			}
 		}
-		aux2 = 0.0;
+		varAux = 0.0;
 		arq = fopen("nota.lst", "r");
 		while(fscanf( arq, "%i %f %f %f\n", &ids, &n1, &n2, &n3) != EOF){
 			if(ids == aux)
@@ -120,10 +120,10 @@ int main( void ){
 	}
   	close( nd );
 
-  	int resp = remove("nota.lst");
+  	int resposta = remove("nota.lst");
 
 
-	printf("\nThreads: %.8f\n", tempo);
+	printf("\nThreads: %.8f\n", time_exec);
 	return 0;
 }
 
