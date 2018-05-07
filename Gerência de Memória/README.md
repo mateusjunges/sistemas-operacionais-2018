@@ -1,6 +1,7 @@
 <h1>Gerência de Memória</h1>
 <h3>Memory Management</h3>
 <ul>
+	<h3>Funções:</h3>
 	<li>begin_memory(): Rotina para inicializar a estrutra de dados referente a memória;</li>
 	<li>first_fit(int size): Rotina para alocar a memoria usando o método First Fit;</li>
 	<li>best_fit(int size): Rotina para alocar a memoria usando o método Best Fit;</li>
