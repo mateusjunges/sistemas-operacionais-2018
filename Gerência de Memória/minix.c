@@ -1,13 +1,13 @@
-/* This is the master header for mm. It includes some other files
- * and defines the principal constants.
- */
- #define _POSIX_SOURCE 1 /* tell headers to include POSIX stuff */
- #define _MINIX 1 /* tell headers to include MINIX stuff */
- #define _SYSTEM 1 /* tell headers that this is the kernel */
+                                    /* Cabeçalho mestre. Inclui alguns outros arquivos e
+                                     * define as constantes principais.
+                                     */
+ #define _POSIX_SOURCE 1             /* headers incluem POSIX */
+ #define _MINIX 1                    /* cabeçalhos incluem MINIX*/
+ #define _SYSTEM 1                   /* cabeçalhos incluem que este é o kernel */
 
- /* The following are so basic, all the *.c files get them automatically. */
- #include <minix/config.h> /* MUST be first */
- #include <ansi.h> /* MUST be second */
+                                    /* Os seguintes são básicos, todos os *.c tem automaticamente */
+ #include <minix/config.h>          /* Deve ser a primeira */
+ #include <ansi.h>                  /* Deve ser a segunda */
  #include <sys/types.h>
  #include <minix/const.h>
  #include <minix/type.h>
@@ -23,19 +23,19 @@
  #include "type.h"
  #include "proto.h"
  #include "glo.h"
- 
- 
- 
- /* This file contains the main program of the memory manager and some related
- * procedures. When MINIX starts up, the kernel runs for a little while,
- * initializing itself and its tasks, and then it runs MM and FS. Both MM
- * and FS initialize themselves as far as they can. FS then makes a call to
- * MM, because MM has to wait for FS to acquire a RAM disk. MM asks the
- * kernel for all free memory and starts serving requests.
+
+
+
+ /* Esse arquivo contém o programa principal de gerência de memória e alguns procedimentos
+ * relacionados. Quando o MINIX inicia, o kernel roda por alguns instantes,
+ * inicializando a si mesmo e seus processos, e então roda o  MM e o  FS. Ambos MM
+ * e FS inicializam na maneira do possível. FS então chama o
+ * MM, porque MM tem que esperar por FS para adquirir um disco RAM. MM pede
+ * ao kernel por toda a memória livre e inicia requisições ao servidor.
  *
- * The entry points into this file are:
- * main: starts MM running
- * reply: reply to a process making an MM system call
+ * Os pontos de entrada para este arquivo são:
+ * main: inicia MM
+ * reply: responde a um processo fazendo um chamada de sistema ao MM
  */
 
  #include "mm.h"
@@ -55,46 +55,46 @@
  *===========================================================================*/
  PUBLIC void main()
  {
- /* Main routine of the memory manager. */
+ /* Rotina principal da gerência de memória. */
 
  int error;
 
- mm_init(); /* initialize memory manager tables */
+ mm_init(); /* inicializa as tabelas de gerência de memória */
 
- /* This is MM's main loop- get work and do it, forever and forever. */
+ /*  Loop principal do MM, que roda para sempre  */
  while (TRUE) {
- /* Wait for message. */
- get_work(); /* wait for an MM system call */
+ /* espera mensagem. */
+ get_work(); /* espera uma chamada de sistema por gerência de memória */
  mp = &mproc[who];
 
- /* Set some flags. */
+ /* Seta algumas flags. */
  error = OK;
  dont_reply = FALSE;
  err_code = -999;
 
- /* If the call number is valid, perform the call. */
+ /* Se o número de chamada é válido, realiza a tarefa. */
  if (mm_call < 0 || mm_call >= NCALLS)
  error = EBADCALL;
  else
  error = (*call_vec[mm_call])();
 
- /* Send the results back to the user to indicate completion. */
- if (dont_reply) continue; /* no reply for EXIT and WAIT */
+ /* Envia os resultados de volta para o usuário, indicando que completou */
+ if (dont_reply) continue; /* Sem resposta para EXIT e WAIT */
  if (mm_call == EXEC && error == OK) continue;
  reply(who, error, result2, res_ptr);
  }
 }
 
 /*===========================================================================*
- * get_work *
+ * função get_work *
  *===========================================================================*/
  PRIVATE void get_work()
  {
- /* Wait for the next message and extract useful information from it. */
+                            /* Espera uma próxima chamada e extrai alguma informação útil dela */
 
  if (receive(ANY, &mm_in) != OK) panic("MM receive error", NO_NUM);
- who = mm_in.m_source; /* who sent the message */
- mm_call = mm_in.m_type; /* system call number */
+ who = mm_in.m_source;      /* quem enviou a mensagem */
+ mm_call = mm_in.m_type;    /* número da chamada de sistema */
  }
 
 
@@ -102,20 +102,21 @@
  * reply *
  *===========================================================================*/
  PUBLIC void reply(proc_nr, result, res2, respt)
- int proc_nr; /* process to reply to */
- int result; /* result of the call (usually OK or error #)*/
- int res2; /* secondary result */
- char *respt; /* result if pointer */
+ int proc_nr;       /* processo ao qual responder */
+ int result;        /* resultado da chamada (usualmente OK ou erro #)*/
+ int res2;          /* segundo resultado */
+ char *respt;       /* resultado do ponteiro */
  {
- /* Send a reply to a user process. */
+                    /* Envia uma resposta a um processo de um usuário. */
 
  register struct mproc *proc_ptr;
 
  proc_ptr = &mproc[proc_nr];
- /*
- * To make MM robust, check to see if destination is still alive. This
- * validy check must be skipped if the caller is a task.
- */
+             /*
+             * Essa verificação de validade deve ser ignorada se o chamador for uma tarefa.
+             * Para tornar o MM robusto, verifica se o destino ainda está vivo
+             * Essa verificação checa se o chamador é uma tarefa.
+             */
  if ((who >=0) && ((proc_ptr->mp_flags&IN_USE) == 0 ||
  (proc_ptr->mp_flags&HANGING))) return;
 
@@ -131,7 +132,7 @@
  *===========================================================================*/
  PRIVATE void mm_init()
  {
- /* Initialize the memory manager. */
+ /* Inicializa o gerênciador de memória */
 
  static char core_sigs[] = {
  SIGQUIT, SIGILL, SIGTRAP, SIGABRT,
@@ -145,20 +146,25 @@
  struct mem_map kernel_map[NR_SEGS];
  int mem;
 
- /* Build the set of signals which cause core dumps. Do it the Posix
- * way, so no knowledge of bit positions is needed.
- */
+            /*
+            * Constrói um conjunto de sinais que causam duplicações de núcleo.
+            * Faz isso da maneira do POSIX, então nenhum conhecimento de posições
+            * bit é necessário
+            */
+
  sigemptyset(&core_sset);
  for (sig_ptr = core_sigs; *sig_ptr != 0; sig_ptr++)
  sigaddset(&core_sset, *sig_ptr);
 
- /* Get the memory map of the kernel to see how much memory it uses,
- * including the gap between address 0 and the start of the kernel.
- */
+             /*
+             * Obtém o mapa de memória do kernel para ver quanta memória isso usa,
+             * incluindo o gap entre o endereço 0 e o início do kernel
+             */
  sys_getmap(SYSTASK, kernel_map);
  minix_clicks = kernel_map[S].mem_phys + kernel_map[S].mem_len;
 
- /* Initialize MM's tables. */
+            /* inicializa as tabelas de gerênciamento de memória */
+
  for (proc_nr = 0; proc_nr <= INIT_PROC_NR; proc_nr++) {
  rmp = &mproc[proc_nr];
  rmp->mp_flags |= IN_USE;
@@ -172,27 +178,33 @@
  sigemptyset(&mproc[INIT_PROC_NR].mp_catch);
  procs_in_use = LOW_USER + 1;
 
- /* Wait for FS to send a message telling the RAM disk size then go "on-line".
- */
+             /*
+             * Espera por FS para enviar uma mensagem dizendo ao disco RAM o tamanho que vai on-line
+             */
  if (receive(FS_PROC_NR, &mess) != OK)
  panic("MM can't obtain RAM disk size from FS", NO_NUM);
 
  ram_clicks = mess.m1_i1;
 
- /* Initialize tables to all physical mem. */
+            /* Inicializa as tabelas para toda a memória física. */
+
  mem_init(&total_clicks, &free_clicks);
 
- /* Print memory information. */
+        /* Mostra as informações de memória */
+
  printf("\nMemory size =%5dK ", click_to_round_k(total_clicks));
  printf("MINIX =%4dK ", click_to_round_k(minix_clicks));
  printf("RAM disk =%5dK ", click_to_round_k(ram_clicks));
  printf("Available =%5dK\n\n", click_to_round_k(free_clicks));
 
- /* Tell FS to continue. */
+        /* Diz ao FS para continuar. */
+
  if (send(FS_PROC_NR, &mess) != OK)
  panic("MM can't sync up with FS", NO_NUM);
 
- /* Tell the memory task where my process table is for the sake of ps(1). */
+
+        /* Diz ao processo de memória onde minha tabela de processo está para o ps(1) */
+
  if ((mem = open("/dev/mem", O_RDWR)) != -1) {
  ioctl(mem, MIOCSPSINFO, (void *) mproc);
  close(mem);
@@ -200,38 +212,40 @@
  }
  }
 
- /* This file is concerned with allocating and freeing arbitrary-size blocks of
- * physical memory on behalf of the FORK and EXEC system calls. The key data
- * structure used is the hole table, which maintains a list of holes in memory.
-* It is kept sorted in order of increasing memory address. The addresses
- * it contains refer to physical memory, starting at absolute address 0
- * (i.e., they are not relative to the start of MM). During system
- * initialization, that part of memory containing the interrupt vectors,
- * kernel, and MM are "allocated" to mark them as not available and to
- * remove them from the hole list.
- *
- * The entry points into this file are:
- * alloc_mem: allocate a given sized chunk of memory
- * free_mem: release a previously allocated chunk of memory
- * mem_init: initialize the tables when MM start up
- * max_hole: returns the largest hole currently available
- */
+             /*
+             * Este arquivo está preocupado com a alocação de memória e liberação
+             * de blocos de tamanho arbitrário de blocos de memória em nome das chamadas
+             * de sistema FORK e EXEC. Os dados principais da estrutura usada é a tabela
+             * de furos, que mantém uma lista de furos na memórria. Ele também é mantido
+             * classificado em ordem crescente de endereço de memória. Os endereços contido
+             * refere-se a memória física, começando no endereço 0.
+             * (ou seja, eles não são relacionados ao início da gerencia de memória)
+             * Durante a inicialização do sistema, a parte de memória que contém os
+             * vetores de interrupção, kernel e gerência de memória são alocados para marcá-los
+             * como disponíveis e removidos da lista de buracos
+             * Os pontos de entrada para este arquivo são:
+             * The entry points into this file are:
+             * alloc_mem: aloca um dado pedaço de memória
+             * free_mem: libera um pedaço previamente alocado de memória
+             * mem_init: inicializa as tabelas quando a gerência de memória inicia
+             * max_hole: retorna o maior burado atualmente disponível
+             */
 
  #include "mm.h"
  #include <minix/com.h>
 
- #define NR_HOLES 128 /* max # entries in hole table */
+ #define NR_HOLES 128       /* max # de entradas na tabela de buracos */
  #define NIL_HOLE (struct hole *) 0
 
  PRIVATE struct hole {
- phys_clicks h_base; /* where does the hole begin? */
- phys_clicks h_len; /* how big is the hole? */
- struct hole *h_next; /* pointer to next entry on the list */
+ phys_clicks h_base;                        /* onde inicia o buraco? */
+ phys_clicks h_len;                         /* qual o tamanho do buraco? */
+ struct hole *h_next;                       /* ponteiro da próxima entrada na lista */
  } hole[NR_HOLES];
 
 
- PRIVATE struct hole *hole_head; /* pointer to first hole */
- PRIVATE struct hole *free_slots; /* ptr to list of unused table slots */
+ PRIVATE struct hole *hole_head;            /* ponteiro para o primeiro buraco */
+ PRIVATE struct hole *free_slots;           /* ponteiro apra a lista de buracos não utilizadas na tabela */
 
  FORWARD _PROTOTYPE( void del_slot, (struct hole *prev_ptr, struct hole *hp) );
  FORWARD _PROTOTYPE( void merge, (struct hole *hp) );
@@ -243,12 +257,13 @@
  PUBLIC phys_clicks alloc_mem(clicks)
  phys_clicks clicks; /* amount of memory requested */
 {
- /* Allocate a block of memory from the free list using first fit. The block
- * consists of a sequence of contiguous bytes, whose length in clicks is
- * given by 'clicks'. A pointer to the block is returned. The block is
- * always on a click boundary. This procedure is called when memory is
- * needed for FORK or EXEC.
- */
+             /*
+             * Aloca um bloco de memória da lista livre usando first fit.
+             * O bloco consite na sequência de bytes contíguos, cujo comprimento
+             * em cliques é dado por cliques. Um ponteiro para o bloco é retornado.
+             * O bloco está sempre em um limite de cliques.
+             * Este procedimento é chamado quando memória é necessária pelo FORK ou EXEC
+             */
 
  register struct hole *hp, *prev_ptr;
  phys_clicks old_base;
@@ -256,15 +271,15 @@
  hp = hole_head;
  while (hp != NIL_HOLE) {
  if (hp->h_len >= clicks) {
- /* We found a hole that is big enough. Use it. */
- old_base = hp->h_base; /* remember where it started */
- hp->h_base += clicks; /* bite a piece off */
- hp->h_len -= clicks; /* ditto */
+                            /* Encontrado um buraco grande o suficiente. Use-o. */
+ old_base = hp->h_base;     /* Relembre onde inicia */
+ hp->h_base += clicks;      /* pega um pedaço */
+ hp->h_len -= clicks;       /* idem */
 
- /* If hole is only partly used, reduce size and return. */
+                            /* Se um buraco está parcialmente usado, reduz o seu tamanho e retorna. */
  if (hp->h_len != 0) return(old_base);
 
- /* The entire hole has been used up. Manipulate free list. */
+                            /* O buraco inteiro foi usado. Manipula a lista livre. */
  del_slot(prev_ptr, hp);
  return(old_base);
  }
@@ -280,14 +295,15 @@
  * free_mem *
  *===========================================================================*/
  PUBLIC void free_mem(base, clicks)
- phys_clicks base; /* base address of block to free */
- phys_clicks clicks; /* number of clicks to free */
+ phys_clicks base;              /* endereço base do bloco a ser liberado */
+ phys_clicks clicks;            /* número de cliques para liberar */
  {
- /* Return a block of free memory to the hole list. The parameters tell where
- * the block starts in physical memory and how big it is. The block is added
- * to the hole list. If it is contiguous with an existing hole on either end,
- * it is merged with the hole or holes.
- */
+             /*
+             * Retorna um bloco de memória livre para lista de livres. Os parâmetros dizem
+             * onde o bloco inicia na memória física e qual o tamanho dele. O bloco é
+             * adicionado a lista de buracos. Se ele é contíguo com um buraco existente
+             * em ambas as extremidades, ele é fundido com o buraco ou buracos
+             */
 
  register struct hole *hp, *new_ptr, *prev_ptr;
 
@@ -298,28 +314,33 @@
  free_slots = new_ptr->h_next;
  hp = hole_head;
 
- /* If this block's address is numerically less than the lowest hole currently
- * available, or if no holes are currently available, put this hole on the
- * front of the hole list.
- */
+             /*
+             * Se este endereço de bloco é numericamente menor que o menor buraco atualmente
+             * disponível, ou se nenhum buraco está atualmente disponível, coloca este buraco
+             * na frente da lista de buracos.
+             */
  if (hp == NIL_HOLE || base <= hp->h_base) {
- /* Block to be freed goes on front of the hole list. */
+
+            /*  Bloco a ser liberado na frente da lista de buracos  */
+
  new_ptr->h_next = hp;
  hole_head = new_ptr;
  merge(new_ptr);
  return;
  }
 
- /* Block to be returned does not go on front of hole list. */
+            /* Bloco a ser retornado não vai a frente da lista de buracos. */
+
  while (hp != NIL_HOLE && base > hp->h_base) {
  prev_ptr = hp;
  hp = hp->h_next;
  }
 
- /* We found where it goes. Insert block after 'prev_ptr'. */
+ /* Onde vai. Insere o bloco depois de 'prev_ptr'. */
+
  new_ptr->h_next = prev_ptr->h_next;
  prev_ptr->h_next = new_ptr;
- merge(prev_ptr); /* sequence is 'prev_ptr', 'new_ptr', 'hp' */
+ merge(prev_ptr);   /* A sequência é 'prev_ptr', 'new_ptr', 'hp' */
  }
 
 
@@ -327,14 +348,14 @@
  * del_slot *
  *===========================================================================*/
  PRIVATE void del_slot(prev_ptr, hp)
- register struct hole *prev_ptr; /* pointer to hole entry just ahead of 'hp' */
- register struct hole *hp; /* pointer to hole entry to be removed */
+ register struct hole *prev_ptr;        /* pointer to hole entry just ahead of 'hp' */
+ register struct hole *hp;              /* pointer to hole entry to be removed */
  {
- /* Remove an entry from the hole list. This procedure is called when a
- * request to allocate memory removes a hole in its entirety, thus reducing
- * the numbers of holes in memory, and requiring the elimination of one
- * entry in the hole list.
- */
+                             /*
+                             * Remove uma entrada da lista de buracos. Este procedimento é chamado quando um
+                             * chamada para alocar memória remove um buraco na sua totalidade, reduzindo
+                             * assim, o número de buracos na memória e a eliminação de uma entrada na lista de buracos.
+                             */
 
  if (hp == hole_head)
  hole_head = hp->h_next;
@@ -350,30 +371,34 @@
  * merge *
  *===========================================================================*/
  PRIVATE void merge(hp)
- register struct hole *hp; /* ptr to hole to merge with its successors */
+ register struct hole *hp; /* ponteiro para o buraco para juntar com seus sucessores */
  {
- /* Check for contiguous holes and merge any found. Contiguous holes can occur
- * when a block of memory is freed, and it happens to abut another hole on
- * either or both ends. The pointer 'hp' points to the first of a series of
- * three holes that can potentially all be merged together.
- */
+
+             /*
+             * Verifica se há buracos e junta os encontrados. Buracos contíguos
+             * podem ocorer quando um bloco de memória está livre, e isso acontece
+             * para encostar em outro buraco uma ou ambas as extremidades.
+             * O ponteiro 'hp' aponta para o primeiro de uma série de buraco que
+             * potencialmente podem estar todos juntos
+             */
 
  register struct hole *next_ptr;
 
- /* If 'hp' points to the last hole, no merging is possible. If it does not,
- * try to absorb its successor into it and free the successor's table entry.
- */
+             /* Se 'hp' aponta para o último buraco, não é possível juntá-lo.
+             * Se não, tenta absorver seu sucessor e libera a entrada da tabela do sucessor.
+             */
+
  if ( (next_ptr = hp->h_next) == NIL_HOLE) return;
  if (hp->h_base + hp->h_len == next_ptr->h_base) {
- hp->h_len += next_ptr->h_len; /* first one gets second one's mem */
+ hp->h_len += next_ptr->h_len; /* primeiro recebe o segundo */
  del_slot(hp, next_ptr);
  } else {
  hp = next_ptr;
  }
 
- /* If 'hp' now points to the last hole, return; otherwise, try to absorb its
- * successor into it.
- */
+             /* Se 'hp' agora aponta para o último buraco, retorna; De outra maneira,
+             * tenta absorver seu sucessor.
+             */
  if ( (next_ptr = hp->h_next) == NIL_HOLE) return;
  if (hp->h_base + hp->h_len == next_ptr->h_base) {
  hp->h_len += next_ptr->h_len;
@@ -387,7 +412,7 @@
  *===========================================================================*/
  PUBLIC phys_clicks max_hole()
  {
- /* Scan the hole list and return the largest hole. */
+            /* Verifica a lista de buracos e retorna o maior deles. */
 
  register struct hole *hp;
  register phys_clicks max;
@@ -406,40 +431,44 @@
  * mem_init *
  *===========================================================================*/
  PUBLIC void mem_init(total, free)
- phys_clicks *total, *free; /* memory size summaries */
+ phys_clicks *total, *free; /* resumos de tamanho de memória */
  {
- /* Initialize hole lists. There are two lists: 'hole_head' points to a linked
- * list of all the holes (unused memory) in the system; 'free_slots' points to
- * a linked list of table entries that are not in use. Initially, the former
- * list has one entry for each chunk of physical memory, and the second
- * list links together the remaining table slots. As memory becomes more
- * fragmented in the course of time (i.e., the initial big holes break up into
- * smaller holes), new table slots are needed to represent them. These slots
- * are taken from the list headed by 'free_slots'.
- */
+             /* Inicializa a lista de buracos. São duas listas: 'hole_head' aponta
+             * para uma lista encadeada de buracos (memória não usada) no sistema;
+             * 'free_slots' aponta para uma lista encadeada de entradas de tabela que
+             * não estão em uso.
+             * Inicialmente, a antiga lista tem uma entrada para cada pedaço de memória física
+             * e a segunda lista encadeada junta o restante da tabela de slots.
+             * Como a memória se torna mais fragmentado no decorrer do tempo (ou seja, os grandes
+             * buracos iniciais se dividem em buracos menores), novos slots de tabela são
+             * necessários para representá-los. Esses slots são retirados da lista
+             * liderada por 'free_slots'
+             */
 
  register struct hole *hp;
- phys_clicks base; /* base address of chunk */
- phys_clicks size; /* size of chunk */
+ phys_clicks base;  /* endereço base */
+ phys_clicks size;  /* tamnaho */
  message mess;
 
- /* Put all holes on the free list. */
+                    /* Coloca todos os buracos na lista */
+
  for (hp = &hole[0]; hp < &hole[NR_HOLES]; hp++) hp->h_next = hp + 1;
  hole[NR_HOLES-1].h_next = NIL_HOLE;
  hole_head = NIL_HOLE;
  free_slots = &hole[0];
 
- /* Ask the kernel for chunks of physical memory and allocate a hole for
- * each of them. The SYS_MEM call responds with the base and size of the
- * next chunk and the total amount of memory.
- */
+                     /*
+                     * Pergunte ao kernel por pedaçoes de memória física e alocar um buraco para
+                     * cada um deles. A chamada SYS_MEM responde com a base e tamanho do próximo
+                     * pecaço e a quantidade total de memória.
+                     */
  *free = 0;
  for (;;) {
  mess.m_type = SYS_MEM;
  if (sendrec(SYSTASK, &mess) != OK) panic("bad SYS_MEM?", NO_NUM);
  base = mess.m1_i1;
  size = mess.m1_i2;
- if (size == 0) break; /* no more? */
+ if (size == 0) break; /* sem mais? */
 
  free_mem(base, size);
  *total = mess.m1_i3;
