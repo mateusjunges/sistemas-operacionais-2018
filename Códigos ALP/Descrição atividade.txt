@@ -1,0 +1,41 @@
+AULA PRÁTICA 07.06.2018
+=======================
+ 
+1) Baixar TODOS os arquivos do diretório:
+	S07_AP_07.2_05.04.2018__Codigos_ALP_cap_11/ 
+
+2) Compilar
+	make
+
+3) Rodar
+
+	server -h		==>	para ajuda
+
+	server -p 4444		==>	abre o servidor na porta 4444
+
+4) Consultar no browser:
+
+	http://localhost:4444/time	ou	http://localhost:4444/diskfree		ou	http://localhost:4444/processes		ou
+	http://localhost:4444/issue	
+
+
+5) Fazer um relatório técnico sobre todos os códigos, 
+	LER:		S07_AP_07.1_05.04.2018__ALP-ch11-application.pdf    
+	COMPLEMENTAR:	S02_AP_02.5_01.03.2018__Advanced_Linux_Programming-ch05-ipc.pdf  
+
+	5.1) Verificar o Makefile --> entender a diferença em SOURCES e MODULES;
+	5.2) Prestar atenção no arquivo main.c como é feito para trabalhar com a passagem de parâmetro da linha de comando;
+	5.3) Verificar no arquivo server.h para que servem as variáveis declaradas como extern;
+	5.4) Verificar no arquivo common.c como um programa obtêm informações sobre si mesmo: validação do diretório /proc;
+	5.5) Verificar no arquivo module.c como um arquivo externo (módulo) é carregado para memória e, principalmente, como é realizada sua ativação;
+	5.6) Comparar os arquivos diskfree.c e time.c para entender como os resultados são extraídos e repassados ao processo chamador;
+	5.7) Verificar no arquivo server.c como é realizada a execução de processos filhos para manipular as chamadas dos processos clientes;
+
+6) Implementar um módulo para calendário no servidor, fazer forma de passar parâmetro referente ao comando:
+
+	 http://localhost:4444/cal			==>	mostra o mês corrente
+	 http://localhost:4444/cal?ano=2004		==>	mostra o ano de 2004
+	 http://localhost:4444/cal?ano=2004&mes=7	==>	mostra o mês de julho do ano de 2004
+
+6.1) Para obter informações sobre os parâmetros do comando cal:
+	$  man cal
