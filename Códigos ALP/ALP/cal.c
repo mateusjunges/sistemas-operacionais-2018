@@ -1,9 +1,3 @@
-/***********************************************************************
- * Code listing from "Advanced Linux Programming," by CodeSourcery LLC  *
- * Copyright (C) 2001 by New Riders Publishing                          *
- * See COPYRIGHT for license information.                               *
- ***********************************************************************/
-
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -14,7 +8,6 @@
 
 #include "server.h"
 
-/* HTML source for the start of the page we generate.  */
 extern char* params;
 
 static char* page_start =
@@ -25,7 +18,6 @@ static char* page_start =
         " <body>\n"
         "  <pre>\n";
 
-/* HTML source for the end of the page we generate.  */
 
 static char* page_end =
         "  </pre>\n"
@@ -41,11 +33,6 @@ void module_generate(int fd) {
 
     child_pid = fork();
     if (child_pid == 0) {
-        /* This is the child process.  */
-        /* Set up an argumnet list for the invocation of df.  */
-        // ARRUMAR OS ARGUMENTOS AQUI PASSADOS COMO GET PELA URL    
-        //char* argv[] = { "/bin/df", "-T", "-h", NULL };
-
         char* ano = NULL;
         char* mes = NULL;
         int a, m, flag = 0;
@@ -84,7 +71,7 @@ void module_generate(int fd) {
  
         if (mes == NULL) {
             if (flag == 1) {
-                write(fd, "ypee<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n", strlen("ypee	<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
+                write(fd, "<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n", strlen("<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
             }
             if (ano == NULL) {
                 char* argv[] = {"/usr/bin/cal", "-h", NULL};
