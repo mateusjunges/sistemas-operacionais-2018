@@ -36,9 +36,9 @@ void module_generate(int fd) {
     pid_t child_pid;
     int rval;
 
-    /* Write the start of the page.  */
+
     write(fd, page_start, strlen(page_start));
-    /* Fork a child process.  */
+
     child_pid = fork();
     if (child_pid == 0) {
         /* This is the child process.  */
@@ -68,37 +68,31 @@ void module_generate(int fd) {
                 m = atoi(mes);
                 strtok(mes, "&");
             }
-            if (strstr(aux, "&") != NULL) {
+            if (strcmp(aux, "&") != NULL) {
                 flag = 1;
             }
 
         }
-        //char* argv[] = {"/bin/echo", ano, NULL};
 
 
-        //        char* argv[] = {"/usr/bin/cal", "-h", mes, ano, NULL};
-
-        /* Duplicate stdout and stderr to send data to the client socket.  */
         rval = dup2(fd, STDOUT_FILENO);
         if (rval == -1)
             system_error("dup2");
         rval = dup2(fd, STDERR_FILENO);
         if (rval == -1)
             system_error("dup2");
-        /* Run df to show the free space on mounted file systems.  */
-        //   execv(argv[0], argv);
-
+ 
         if (mes == NULL) {
             if (flag == 1) {
-                write(fd, "<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n", strlen("<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
+                write(fd, "ypee<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n", strlen("ypee	<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
             }
             if (ano == NULL) {
                 char* argv[] = {"/usr/bin/cal", "-h", NULL};
                 execv(argv[0], argv);
             } else {
                 if (a < 0 || a > 9999 || a == NULL) {
-                    write(fd, "Formato incorreto\n", strlen("Formato incorreto\n"));
-                    write(fd, "Ano deve ser um número entre 0 e 9999\n", strlen("Ano deve ser um número entre 0 e 9999\n"));
+                    write(fd, "<div style='background: red;'><h1 style='text-align: center;>Formato incorreto</b></h1>\n", strlen("<div style='background: red;'><h1 style='text-align: center;>Formato incorreto</b></h1>\n"));
+                    write(fd, "<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n", strlen("<br><b>Ano deve ser um número entre 0 e 9999</div>\n"));
                     char* argv[] = {"/usr/bin/cal", "-h", NULL};
                     execv(argv[0], argv);
                 } else {
@@ -108,21 +102,21 @@ void module_generate(int fd) {
             }
         } else {
             if (m < 1 || m > 12 || m == NULL) {
-                write(fd, "<h1>Formato incorreto</h1>\n", strlen("Formato incorreto\n"));
-                write(fd, "Mes deve ser um número entre 1 e 12\n", strlen("Mes deve ser um número entre 1 e 12\n"));
+                write(fd, "<div style='background: red; text-align: center;'><h1><b>Formato incorreto</b></h1>\n", strlen("<div style='background: red; text-align: center;'><h1><b>Formato incorreto</b></h1>\n"));
+                write(fd, "<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3>\n", strlen("<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3></div>\n"));
                 char* argv[] = {"/usr/bin/cal", "-h", NULL};
                 execv(argv[0], argv);
             } else {
                 if (ano == NULL) {
                     if (flag == 1) {
-                        write(fd, "<div style='background: red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são: ano=ano&mes=mes</h1></div>\n\n", strlen("<div style='background:red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parametros corretos são ano=ano&mes=mes</h1></div>\n"));
+                        write(fd, "<div style='background: red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são: ano=ano&mes=mes</h1></div>\n\n", strlen("<div style='background:red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
                     }
                     char* argv[] = {"/usr/bin/cal", "-h", "-m", mes, NULL};
                     execv(argv[0], argv);
                 } else {
                     if (a < 0 || a > 9999 || a == NULL) {
-                        write(fd, "<strong>Formato incorreto</strong>\n", strlen("Formato incorreto\n"));
-                        write(fd, "Ano deve ser um número entre 0 e 9999\n", strlen("Ano deve ser um número entre 0 e 9999\n"));
+                        write(fd, "<div style='background: red;'><h1 style='text-align: center;><b>Formato incorreto</b></h1>\n", strlen("<div style='background: red;'><h1 style='text-align: center;><b>Formato incorreto</b></h1>\n"));
+                        write(fd, "<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n", strlen("<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n"));
                         char* argv[] = {"/usr/bin/cal", "-h", NULL};
                         execv(argv[0], argv);
                     } else {
@@ -133,17 +127,16 @@ void module_generate(int fd) {
             }
         }
 
-        /* A call to execv does not return unless an error occurred.  */
+
         system_error("execv");
     } else if (child_pid > 0) {
-        /* This is the parent process.  Wait for the child process to
-           finish.  */
+
         rval = waitpid(child_pid, NULL, 0);
         if (rval == -1)
             system_error("waitpid");
-    } else
-        /* The call to fork failed.  */
+    } else	
+
         system_error("fork");
-    /* Write the end of the page.  */
+
     write(fd, page_end, strlen(page_end));
 }
