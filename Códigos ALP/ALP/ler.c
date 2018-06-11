@@ -4,7 +4,7 @@
 
 void main()
 {
-   char str[]="?ano =2017 &mes =10";
+   char str[]="?ano =2018 &mes =06";
 
    char var1[10],var2[10],val1[10],val2[10];
 
