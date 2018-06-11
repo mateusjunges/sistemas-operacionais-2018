@@ -13,8 +13,9 @@ static char* page_start = //conteudo a ser exibido no inicio da pagina
         "<html>\n"
         "<head>\n"
         "    <meta charset=\"utf-8\">\n"
+	"<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.0.13/css/all.css' integrity='sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp' crossorigin='anonymous'>"
         "</head>\n"
-       " <body background='https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439' background-repeat='no-repeat'>\n"
+       " <body>\n"
 	"<div class='inicio'>"
 		"<h1>Módulo de calendário - ALP - SO 2018</h1>\n"
 	"</div>\n"
@@ -24,7 +25,7 @@ static char* page_start = //conteudo a ser exibido no inicio da pagina
 
 
 static char* page_end = //conteudo html a ser exibido no fim da pagina
-        "  </pre>\n"
+        "</pre>\n"
 	"</div>"
 	" <style>"
 ".footer {"
@@ -56,19 +57,40 @@ static char* page_end = //conteudo html a ser exibido no fim da pagina
 	"text-align: center;"
 	"width: auto;"
 "}"
+"pre {"
+	"background: url('https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439');"
+	"background-position: center;"
+	"background-repeat: no-repeat;"
+	"background-size: 200px 200px;"
+"}"
 "</style>"
 
 "<br><br><br><br><br><br><br>"
-"<div class='footer'>"
+"<div class='footer' background='https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439'>"
 	"<h2>Universidade Estadual de Ponta Grossa - UEPG</h2>"
 	"<h3>Sistemas Operacionais - Engenharia de Computação</h3>"
-	"<h4>Desenvolvimento:<a href='https://mateusjunges.com'> Mateus Junges</a></h4>"
-"</div> "
+	"<div>"
+		"<h4><a href='https://mateusjunges.com'"
+			"style='text-decoration: none; color: #000000;'"
+			"class=''>Mateus Junges</a></h4>"
+		"<a href='mailto:contato@mateusjunges.com'><i class='fa fa-at'></i></a>"
+ 		"</div>"
+	"</div> "
 "</body>\n"
 "<script>"
 	"alert('Atividade da disciplina de Sistemas operacionais, do 3º ano de engenharia de computação, na Universidad Estadual de Ponta Grossa - Mateus Junges')"
 "</script>"
 "</html>\n";
+
+
+static char* erro = 
+		"<div style='background: red;\n"
+		     " margin: auto;\n"
+		     "border-radius: 10%;\n"
+		     "text-align: center;\n"
+		     "width: 80%;'>\n"
+		     "<h1>Os parâmetros corretos são ano=ano&mes=mes</h1>\n"
+               "</div>\n";
 
 void module_generate(int fd) {
     pid_t child_pid;
@@ -117,7 +139,19 @@ void module_generate(int fd) {
  
         if (mes == NULL) { //se nao passou o parametro para o mes
             if (flag == 1) {
-                write(fd, "<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n", strlen("<div style='background: red; margin: auto; border-radius: 10%; text-align: center; width: 80%;'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
+                write(fd, "<div style='background: red;\n"
+		     " margin: auto;\n"
+		     "border-radius: 10%;\n"
+		     "text-align: center;\n"
+		     "width: 80%;'>\n"
+		     "<h1>Os parâmetros corretos são ano=ano&mes=mes</h1>\n"
+               "</div>\n", strlen("<div style='background: red;\n"
+		     " margin: auto;\n"
+		     "border-radius: 10%;\n"
+		     "text-align: center;\n"
+		     "width: 80%;'>\n"
+		     "<h1>Os parâmetros corretos são ano=ano&mes=mes</h1>\n"
+               "</div>\n"));
             }
             if (ano == NULL) { // se o ano for Nulo, executa o comando cal com o parametro de help
                 char* argv[] = {"/usr/bin/cal", "-h", NULL};
