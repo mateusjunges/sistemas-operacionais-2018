@@ -20,7 +20,7 @@ static char* page_start = //conteudo a ser exibido no inicio da pagina
 	"</div>\n"
 	"<br><br><br><br><br>\n"
 	"<div>\n"
-        "<pre>\n";
+        "<pre id='calendario'>\n <!--tag pre pra elemento pre formatado, no caso vem do resultado do execv -->";
 
 
 static char* page_end = //conteudo html a ser exibido no fim da pagina
@@ -52,7 +52,7 @@ static char* page_end = //conteudo html a ser exibido no fim da pagina
 	"background: white;"
 	"width: 100%;"
 "}"
-"pre {"
+"#calendario {"
 	"text-align: center;"
 	"width: auto;"
 "}"
