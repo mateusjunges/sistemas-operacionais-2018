@@ -78,7 +78,7 @@ static char* page_end = //conteudo html a ser exibido no fim da pagina
 	"</div> "
 "</body>\n"
 "<script>"
-	"alert('Atividade da disciplina de Sistemas operacionais, do 3º ano de engenharia de computação, na Universidad Estadual de Ponta Grossa - Mateus Junges')"
+	"alert('Atividade da disciplina de Sistemas operacionais, do 3º ano de engenharia de computação, na Universidade Estadual de Ponta Grossa - Mateus Junges')"
 "</script>"
 "</html>\n";
 
