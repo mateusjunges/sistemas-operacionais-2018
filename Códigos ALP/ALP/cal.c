@@ -9,7 +9,7 @@
 
 extern char* params; //params é declarado no server.c
 
-static char* page_start = //conteudo a ser exibido no inicio da pagina
+static char* inicio_da_pagina = //conteudo a ser exibido no inicio da pagina
         "<html>\n"
         "<head>\n"
             "<title>Calendário - SO</title>"
@@ -24,7 +24,7 @@ static char* page_start = //conteudo a ser exibido no inicio da pagina
         "<pre id='calendario'>\n <!--tag pre pra elemento pre formatado, no caso vem do resultado do execv -->";
 
 
-static char* page_end = //conteudo html a ser exibido no fim da pagina
+static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
         "</pre>\n"
 	"</div>"
 	" <style>"
@@ -66,7 +66,7 @@ static char* page_end = //conteudo html a ser exibido no fim da pagina
 "</style>"
 
 "<br><br><br><br><br><br><br>"
-"<div class='footer' background='https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439'>"
+"<div class='footer'>"
 	"<h2>Universidade Estadual de Ponta Grossa - UEPG</h2>"
 	"<h3>Sistemas Operacionais - Engenharia de Computação</h3>"
 	"<div>"
@@ -97,33 +97,33 @@ void module_generate(int file_descriptor) {
     int rval;
 
 
-    write(file_descriptor, page_start, strlen(page_start)); //inicio da pagina html
+    write(file_descriptor, inicio_da_pagina, strlen(inicio_da_pagina)); //inicio da pagina html
 
     child_pid = fork();
     if (child_pid == 0) {
         char* ano = NULL; //ano
         char* mes = NULL; //mes
         int a, m, flag = 0; // inteiros para ano e mes
-        char *aux = malloc(sizeof (params));
-        strcpy(aux, params);
-        if (strcmp(aux, "")) {
-            mes = malloc(sizeof (aux));
-            ano = malloc(sizeof (aux));
-            strcpy(ano, aux);
+        char *auxiliar = malloc(sizeof (params));
+        strcpy(auxiliar, params);
+        if (strcmp(auxiliar, "")) {
+            mes = malloc(sizeof (auxiliar));
+            ano = malloc(sizeof (auxiliar));
+            strcpy(ano, auxiliar);
             ano = strstr(ano, "ano");
             if (ano != NULL) { // se o parametro ano existe
                 ano = strchr(ano, '=') + 1;
                 strtok(ano, "&");
                 a = atoi(ano);
             }
-            strcpy(mes, aux);
+            strcpy(mes, auxiliar);
             mes = strstr(mes, "mes");
             if (mes != NULL) { //se existe o parametro mes
                 mes = strchr(mes, '=') + 1;
                 m = atoi(mes); //passa para inteiro
                 strtok(mes, "&");
             }
-            if (strstr(aux, "&") != NULL) {
+            if (strstr(auxiliar, "&") != NULL) {
                 flag = 1;
             }
 
@@ -204,5 +204,5 @@ void module_generate(int file_descriptor) {
             system_error("waitpid"); //se erro
     } else
         system_error("fork");
-    write(file_descriptor, page_end, strlen(page_end)); //final da pagina
+    write(file_descriptor, fim_da_pagina, strlen(fim_da_pagina)); //final da pagina
 }
