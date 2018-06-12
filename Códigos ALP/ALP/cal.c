@@ -20,13 +20,12 @@ static char* inicio_da_pagina = //conteudo a ser exibido no inicio da pagina
 		"<h1>Módulo de calendário - ALP - SO 2018</h1>\n"
 	"</div>\n"
 	"<br><br><br><br><br>\n"
-	"<div>\n"
+	"<div class='text'></div>\n"
         "<pre id='calendario'>\n <!--tag pre pra elemento pre formatado, no caso vem do resultado do execv -->";
 
 
 static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
         "</pre>\n"
-	"</div>"
 	" <style>"
 ".footer {"
 	"position: fixed;"
@@ -41,6 +40,7 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 " .footer > h3 {"
 	"color: black;"
 "}"
+
 ".footer > h4 {"
 	"color: black;"
 	"text-decoration: none;"
@@ -58,10 +58,14 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 	"width: auto;"
 "}"
 "body {"
-    "background: url('https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439');"
-	"background-position: center;"
+	"background: url('https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439');"
+	"background-position: center center;"
 	"background-repeat: no-repeat;"
 	"background-size: 200px 200px;"
+	"background-attachment: fixed;"
+"}"
+".text {"
+	"opacity: 1.0;"
 "}"
 "pre {"
     "min-width: 200px;"
