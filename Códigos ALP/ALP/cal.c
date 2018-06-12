@@ -58,6 +58,8 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 	"width: auto;"
 "}"
 "pre {"
+    "min-width: 200px;"
+    "min-height: 200px;"
 	"background: url('https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439');"
 	"background-position: center;"
 	"background-repeat: no-repeat;"
