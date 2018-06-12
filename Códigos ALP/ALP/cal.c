@@ -7,7 +7,7 @@
 #include <wctype.h>
 #include "server.h"
 
-extern char* params;
+extern char* params; //params é declarado no server.c
 
 static char* page_start = //conteudo a ser exibido no inicio da pagina
         "<html>\n"
@@ -92,12 +92,12 @@ static char* erro =
 		     "<h1>Os parâmetros corretos são ano=ano&mes=mes</h1>\n"
                "</div>\n";
 
-void module_generate(int fd) {
+void module_generate(int file_descriptor) {
     pid_t child_pid;
     int rval;
 
 
-    write(fd, page_start, strlen(page_start)); //inicio da pagina html
+    write(file_descriptor, page_start, strlen(page_start)); //inicio da pagina html
 
     child_pid = fork();
     if (child_pid == 0) {
@@ -130,16 +130,16 @@ void module_generate(int fd) {
         }
 
 
-        rval = dup2(fd, STDOUT_FILENO);
+        rval = dup2(file_descriptor, STDOUT_FILENO);
         if (rval == -1)
             system_error("dup2");
-        rval = dup2(fd, STDERR_FILENO);
+        rval = dup2(file_descriptor, STDERR_FILENO);
         if (rval == -1)
             system_error("dup2");
 
         if (mes == NULL) { //se nao passou o parametro para o mes
             if (flag == 1) {
-                write(fd, "<div style='background: red;\n"
+                write(file_descriptor, "<div style='background: red;\n"
 		     " margin: auto;\n"
 		     "border-radius: 10%;\n"
 		     "text-align: center;\n"
@@ -158,8 +158,8 @@ void module_generate(int fd) {
                 execv(argv[0], argv);
             } else { // Se o mes é NULL e o ano existe
                 if (a < 0 || a > 9999 || a == NULL) { //se for um ano não válido
-                    write(fd, "<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n", strlen("<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n"));
-                    write(fd, "<br><h3><b>Ano deve ser um número entre 0 e 9999</b></h3>\n", strlen("<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3></div>\n"));
+                    write(file_descriptor, "<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n", strlen("<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n"));
+                    write(file_descriptor, "<br><h3><b>Ano deve ser um número entre 0 e 9999</b></h3>\n", strlen("<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3></div>\n"));
                     char* argv[] = {"/usr/bin/cal", "-h", NULL}; //Executa o cal com o parametro '-h'
                     execv(argv[0], argv);
                 } else {
@@ -169,21 +169,21 @@ void module_generate(int fd) {
             }
         } else { //se o mes não for NULL
             if (m < 1 || m > 12 || m == NULL) { // se for um mes não válido
-                write(fd, "<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n", strlen("<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n"));
-                write(fd, "<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3>\n", strlen("<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3></div>\n"));
+                write(file_descriptor, "<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n", strlen("<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n"));
+                write(file_descriptor, "<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3>\n", strlen("<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3></div>\n"));
                 char* argv[] = {"/usr/bin/cal", "-h", NULL};
                 execv(argv[0], argv);
             } else {
                 if (ano == NULL) {//se for um mês válido mas o ano está NULL
                     if (flag == 1) {
-                        write(fd, "<div style='background: red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são: ano=ano&mes=mes</h1></div>\n\n", strlen("<div style='background:red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
+                        write(file_descriptor, "<div style='background: red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são: ano=ano&mes=mes</h1></div>\n\n", strlen("<div style='background:red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
                     }
                     char* argv[] = {"/usr/bin/cal", "-m", mes, NULL};
                     execv(argv[0], argv); //Executa o comando cal com o parametro -m e o mes passado na URL
                 } else {
                     if (a < 0 || a > 9999 || a == NULL) { //se o ano existe mas não é valido
-                        write(fd, "<div style='background: red;'><h1 style='text-align: center;><b>Formato incorreto</b></h1>\n", strlen("<div style='background: red;'><h1 style='text-align: center;><b>Formato incorreto</b></h1>\n"));
-                        write(fd, "<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n", strlen("<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n"));
+                        write(file_descriptor, "<div style='background: red;'><h1 style='text-align: center;><b>Formato incorreto</b></h1>\n", strlen("<div style='background: red;'><h1 style='text-align: center;><b>Formato incorreto</b></h1>\n"));
+                        write(file_descriptor, "<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n", strlen("<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n"));
                         char* argv[] = {"/usr/bin/cal", "-h", NULL};  //executa cal com -h
                         execv(argv[0], argv);
                     } else {
@@ -204,5 +204,5 @@ void module_generate(int fd) {
             system_error("waitpid"); //se erro
     } else
         system_error("fork");
-    write(fd, page_end, strlen(page_end)); //final da pagina
+    write(file_descriptor, page_end, strlen(page_end)); //final da pagina
 }

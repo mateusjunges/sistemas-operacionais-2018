@@ -88,7 +88,7 @@ static void handle_get(int connection_fd, const char* page) {
        contain any additional slashes -- we don't support any
        subdirectories.  */
 
-    if (*page == '/' && strchr(page + 1, '/') == NULL) {
+    if (*page == '/' && strchr(page + 1, '/') == NULL) {//pega o que está depois da '/'
         char module_file_name[64];
 
         /* The page name looks OK.  Construct the module name by appending
@@ -98,9 +98,7 @@ static void handle_get(int connection_fd, const char* page) {
         auxpage = malloc(sizeof (page));
         strcpy(auxpage, page);
         // PROCURA PARÂMETROS PASSADOS
-        if (strchr(auxpage, '?') != NULL)
-            // SE ACHOU PARÂMETRO
-        {
+        if (strchr(auxpage, '?') != NULL){ // SE ACHOU PARÂMETRO
             char *aux;
             aux = malloc(sizeof (page));
             strcpy(aux, page);
