@@ -14,6 +14,7 @@ static char* inicio_da_pagina = //conteudo a ser exibido no inicio da pagina
         "<head>\n"
             "<title>Calendário - SO</title>"
             "<meta charset=\"utf-8\">\n"
+	    "<link rel='icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOtSURBVGhD7ZpryE1ZGMdf9ztFxoxrNIhiJEL5ME2KSI2kqVHmg2sikXxjTFHCByQaxhcyhcTUpEbyxWUyJbfkUkMu4zK+MGWM6/j9tnd1drvjfc9hX6Tzr1/nrKe991rP2evyrPWcuvfUEngEY6LSu2kT/A09olJBWgb/w1Vop6FKTQTvfwzdNBSlFnAGbMxGDVWoM/wF3rtIQ9EaBs/gFXwDM+FnuAj34SX8Czfhd1gPE8BrdOIYNIUPQtvBRpVDR8rZAyOhcLWHbRAa+x8cgjkwFOz3TaA19IEvYQ1cguCIb20aFKa+EBqkIzvgM6hUdi+7X3DIMabTucpf9w7YgHsQpl8Hf6Xy2uawGoIzP0FuspucAyu+Bp+Dg/UwvICF0JBawSl4Ct9qQPMgdE/Xply0DqzQmWiwBvQphF/1pIYG9AWEaw9qqJdjR5vjbJCGLNUTrMgKF2iIyT5+Bb6OSm9XM9gJl8HBH9QSToPP3qchS/0AVuT4sH+nLX8En283664hK10AK9oC/TJgADwA65gPmagNNLa4pYndL1V1gbbQCazgOfyZIXfBen4F1RWcKd9Zrg1hmpXj9Z83IEtNAuu5BSGodKo2gugIVWkEGAj6EPcbhtl+z9ORgCGM65PfT4CzXsVyLfBGI1UXO8eHU6K2vByx8WEqd9p3utb+nYZK5LTqoHYsxPumi1Sejhjex+Uspt1IuyKFQf0wKpUU7Hk5EgZ7kOGM9t1RqQLVHElJNUeSqjmSkmqOJFVzJCXVHEnqo3GkA3jDP1GpJPclRToyHapyRBm6e1P/qPRG4eQ8L0euQ/ycbC1o97NimbPwJk8CfaWzIezc8nJEfoEpsBLcXBmRe2hesTzT/QPCA+Pk6Ugc9yeLoWq5L3EPsB92wSzwgXk54uZuBRwAt7mjIBUVPWulpuDI7aiUnSaD9Tg+MpNJSzNTS8GcRhaYX9GRVZCZ5oKOWFGWmKrwYDxTjYMfwT5spR4V7Y3xG2g3Mojbj4J2j0TL2T1P3gO+iVwzvL3BBiQH/xDQfj4qlTQWtCdPR4I9s8HdmGqORKWSao6kpY/GkV5gAzw1j8ugTvvZqFTSaNDuvx/i+goKdcTsrPlEgzlz7kHmFm1YcmU2leYa5D7HvU2Q063Xb41KBWkz2AjT1K72nt4/ARs8HpIyAPV6U3imoU3hGZrLcChMhvtHwMYFfEPLoZw+geT2wLdqxFC4/NvFVNgAdpPGflm3BzPAzdv3MBDeU3V1rwE/FuMlAfXKBQAAAABJRU5ErkJggg=='>"	
 	    "</head>\n"
        " <body>\n"
 	"<div class='inicio'>"
@@ -61,7 +62,7 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 	"background: url('https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439');"
 	"background-position: center center;"
 	"background-repeat: no-repeat;"
-	"background-size: 200px 200px;"
+	"background-size: 300px 300px;"
 	"background-attachment: fixed;"
 "}"
 ".text {"
@@ -70,10 +71,6 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 "pre {"
     "min-width: 200px;"
     "min-height: 200px;"
-	"//background: url('https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439');"
-	"//background-position: center;"
-	"//background-repeat: no-repeat;"
-	"//background-size: 200px 200px;"
 "}"
 "</style>"
 
@@ -89,9 +86,15 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
  		"</div>"
 	"</div> "
 "</body>\n"
-"<script>"
-	"alert('Atividade da disciplina de Sistemas operacionais, do 3º ano de engenharia de computação, na Universidade Estadual de Ponta Grossa - Mateus Junges')"
+"<script src='https://unpkg.com/sweetalert2@7.17.0/dist/sweetalert2.all.js'></script>"
+"\n<script type='text/javascript'>\n"
+	"swal({"
+		"icon: 'warning',"
+		"title: 'Sistemas Operacionais - Calendário',"
+		"html: 'Utilize os parâmetros: <br><b>ano=XXXX</b>, para retornar o calendario do ano desejado, <br><b>mes=XX</b>, para retornar o calendário do mes desejado no ano corrente. <br>Da seguinte forma: <br><b>localhost:4444/cal?ano=XXXX&mes=XX</b>, <br>ou <b>localhost:4444/cal?ano=XXXX</b>, <br><b>ou localhost:4444/cal?mes=XX</b>'," 	
+	"});"
 "</script>"
+
 "</html>\n";
 
 
