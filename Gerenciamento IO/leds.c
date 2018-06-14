@@ -2,7 +2,7 @@
 // Programa LEDS.C
 //
 
-// Pesquisar sobre: 
+// Pesquisar sobre:
 //	- ioperm()
 	/*
 	ioperm()  sets  the  port access permission bits for the calling thread
@@ -44,7 +44,7 @@
        They  are  primarily  designed for internal kernel use, but can be used
        from user space.
 	*/
-//	- controlador do teclado: 
+//	- controlador do teclado:
 //		- http://www.brokenthorn.com/Resources/OSDev19.html
 
 #include <stdio.h>
@@ -75,7 +75,7 @@ int main( int argc, char **argv )
 
 	setuid( 0 ); 	//  acertar prioridade -- TALVEZ PRECISE ROOT
 
-	if( ioperm( PORTA_BASE, QTD_PORTAS, ON ) ) 
+	if( ioperm( PORTA_BASE, QTD_PORTAS, ON ) )
 		erro( "Falha no ioperm de acesso!" );
 	for( i = 0; i < VEZES; ++i) {
 		setLeds( L );
@@ -85,19 +85,19 @@ int main( int argc, char **argv )
 		setLeds( R );
 		sleep( 1 );
 	}
-	if( ioperm( PORTA_BASE, QTD_PORTAS, OFF ) ) 
+	if( ioperm( PORTA_BASE, QTD_PORTAS, OFF ) )
 		erro( "Falha no ioperm de fechamento!" );
 	fprintf( stdout, "... Gostou?\n\n" );
 	exit( 0 );
 }
-	
+
 void setLeds( unsigned char led )
 {
 	outb( 0xED, PORTA_BASE );
-	while( (inb( PORTA_BASE + 4 ) & 2)  )
+	while( (inb( PORTA_BASE + 4 ) & 2)  ) //Faz máscara .E. com 2 para ver so bit está ligado
 		;
 	outb( led, PORTA_BASE );
-	while( (inb( PORTA_BASE + 4 ) & 2)  )
+	while( (inb( PORTA_BASE + 4 ) & 2)  )// Faz máscara .E. com 2 para ver se o bit está ligado
 		;
 	usleep( 1500 );
 }
