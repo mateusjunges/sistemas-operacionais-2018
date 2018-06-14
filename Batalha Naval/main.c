@@ -9,10 +9,17 @@ int us = 0;                 /* 0=starter / 1=challenger */
 int them = 0;               /* 1=challenger / 0=starter */
 int flg_game_over = 0;      /* != 0 => game over */
 
-struct S_TABLE *table = 0;  /* Shared Memory Table */
+struct S_TABLE *table = 0;  /* Tabela de memória compartilhada */
+
 
 int
 main(int argc,char **argv) {
+    union semun {
+	       int              val;    /* Valor para SETVAL */
+               struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
+               unsigned short  *array;  /* Array for GETALL, SETALL */
+               struct seminfo  *__buf;  /* Buffer for IPC_INFO*/
+    };	
     union semun semarg;         /* for semctl() */
     ushort seminit[] = { 1, 0 };/* Initial sem values */
     pid_t p1, p2;               /* PID for player 1 & 2 */
@@ -37,7 +44,6 @@ main(int argc,char **argv) {
         }
 
         attachTable();          /* Attach new table */
-
         /*
          * Create a binary semaphore set :
          */
