@@ -129,25 +129,25 @@ void module_generate (int file_descriptor)
     if (rval == -1)
       system_error ("dup2");
           if(parametros == NULL){ //Se os parâmetros são nulos:
-            char* argv[] = { "/usr/bin/cal", "-h", NULL }; //Coloca o comando cal e o parametro -h no argv
-            execv (argv[0], argv); //Chama o cal com o argumento de ajuda
+            char* argv[] = { "/usr/bin/cal", NULL, NULL }; //Coloca o comando cal sem nenhum parametro no argv
+            execv (argv[0], argv); //Chama o cal
           }else{ //Se os parâmetros não são nulos:
-            char* aux_parametros = strtok(parametros, "&"); //faz o strtok com o &
-            char* aux_parametros2 = strtok(NULL, "&");
+            char* auxiliar_parametros = strtok(parametros, "&"); //faz o strtok com o &
+            char* auxiliar_parametros2 = strtok(NULL, "&");
             int ano = -1, mes = -1; //coloca -1 no ano e no mes
-            char* param1 = strtok(aux_parametros, "="); //pega o valor para o parâmetro 1
+            char* parametro_01 = strtok(auxiliar_parametros, "="); //pega o valor para o parâmetro 1
             char* valor1 = strtok(NULL, "=");
-            if(param1 == NULL || valor1 == NULL){ //Se o parametro 1 ou seu valor for nulo
+            if(parametro_01 == NULL || valor1 == NULL){ //Se o parametro 1 ou seu valor for nulo
               write(file_descriptor, erro_parametros, strlen(erro_parametros));
             }
-            char* param2 = "-", valor2 = "-";
-            if(aux_parametros2 != NULL){
-              char* param2 = strtok(aux_parametros2, "=");
+            char* parametro_02 = "-", valor2 = "-";
+            if(auxiliar_parametros2 != NULL){
+              char* parametro_02 = strtok(auxiliar_parametros2, "=");
               char* valor2 = strtok(NULL, "=");
-              if(param2 == NULL || valor2 == NULL){
+              if(parametro_02 == NULL || valor2 == NULL){
                 write(file_descriptor, erro_parametros, strlen(erro_parametros));
               }
-              if(!strcmp(param1, "ano") && !strcmp(param2, "mes")){
+              if(!strcmp(parametro_01, "ano") && !strcmp(parametro_02, "mes")){
                 int ano = atoi(valor1);
                 int mes = atoi(valor2);
                 if(ano < 1 || ano > 9999){
@@ -162,7 +162,7 @@ void module_generate (int file_descriptor)
                   char* argv[] = { "/usr/bin/cal", valor2, valor1, NULL };
                   execv (argv[0], argv);
                 }
-              }else if(!strcmp(param1, "mes") && !strcmp(param2, "ano")){
+              }else if(!strcmp(parametro_01, "mes") && !strcmp(parametro_02, "ano")){
                 int ano = atoi(valor2);
                 int mes = atoi(valor1);
                 if(ano < 1 || ano > 9999){
@@ -183,7 +183,7 @@ void module_generate (int file_descriptor)
                 execv (argv[0], argv);
               }
             }else{
-              if(!strcmp(param1, "ano")){
+              if(!strcmp(parametro_01, "ano")){
                 int ano = atoi(valor1);
                 if(ano < 1 || ano > 9999){
                   write(file_descriptor, erro_ano, strlen(erro_ano));
@@ -193,7 +193,7 @@ void module_generate (int file_descriptor)
                   char* argv[] = { "/usr/bin/cal", valor1, NULL };
                   execv (argv[0], argv);
                 }
-              }else if(!strcmp(param1, "mes")){
+              }else if(!strcmp(parametro_01, "mes")){
                 int mes = atoi(valor1);
                 if(mes < 1 || mes > 12){
                   write(file_descriptor, erro_mes, strlen(erro_mes));
