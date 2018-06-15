@@ -106,7 +106,7 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 "</html>\n";
 
 static char* erro_parametros =  "<div class='erro-parametros'>\n"
-                                    "<h1>Parâmetros inválidos!<h1>"
+                                    "<h1>Parâmetros inválidos!</h1>"
                                 "</div>\n";
 static char* erro_ano = "<div class='erro-parametros'>\n"
                             "<h1>O ano deve ser um valor entre 0 e 9999</h1>"
