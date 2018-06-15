@@ -67,6 +67,8 @@ static char* inicio_da_pagina = //conteudo a ser exibido no inicio da pagina
                     "text-align: center;\n"
                     "width: 80%;\n"
                     "height: 20%;\n"
+                    "margin: auto;\n"
+                    "border-radius: 50px;\n"
                 "}\n"
             "</style>\n"
 	    "</head>\n"
@@ -104,8 +106,7 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 "</html>\n";
 
 static char* erro_parametros =  "<div class='erro-parametros'>\n"
-                                    "<h1>Parametros invalidos!<h1>\n"
-                                    "<p>Uso: cal?ano=XXXX&mes=XX</p>\n"
+                                    "<h1>Parâmetros inválidos!<h1>\n"
                                 "</div>\n";
 static char* erro_ano = "<div class='erro-parametros'>\n"
                             "<h1>O ano deve ser um valor entre 0 e 9999</h1>\n"
