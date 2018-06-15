@@ -106,13 +106,13 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 "</html>\n";
 
 static char* erro_parametros =  "<div class='erro-parametros'>\n"
-                                    "<h1>Parâmetros inválidos!<h1>\n"
+                                    "<h1>Parâmetros inválidos!<h1>"
                                 "</div>\n";
 static char* erro_ano = "<div class='erro-parametros'>\n"
-                            "<h1>O ano deve ser um valor entre 0 e 9999</h1>\n"
+                            "<h1>O ano deve ser um valor entre 0 e 9999</h1>"
                         "</div>\n";
 static char* erro_mes = "<div class='erro-parametros'>\n"
-                            "<h1>O mês deve ser um valor entre 1 e 12!</h1>\n"
+                            "<h1>O mês deve ser um valor entre 1 e 12!</h1>"
                         "</div>\n";
 void module_generate (int file_descriptor)
 {
