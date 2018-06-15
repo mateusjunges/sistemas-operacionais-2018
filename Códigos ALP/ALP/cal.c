@@ -27,7 +27,7 @@ static char* inicio_da_pagina = //conteudo a ser exibido no inicio da pagina
         "<pre id='calendario'>\n <!--tag pre pra elemento pre formatado, no caso vem do resultado do execv -->";
 
 
-static char* inicio_da_pagina = //conteudo html a ser exibido no fim da pagina
+static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
         "</pre>\n"
 	" <style>"
 ".footer {"
