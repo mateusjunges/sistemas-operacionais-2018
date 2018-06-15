@@ -108,7 +108,7 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 static char* erro_parametros =  "<div class='erro-parametros'>\n"
                                     "<h1>Parametros invalidos!<h1>\n"
                                     "<p>Uso: cal?ano=XXXX&mes=XX</p>\n"
-                                "</div>\n"
+                                "</div>\n";
 void module_generate (int file_descriptor)
 {
   pid_t child_pid;
