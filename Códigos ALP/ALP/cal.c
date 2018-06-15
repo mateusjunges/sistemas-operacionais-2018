@@ -11,12 +11,12 @@ void* parametros;
 
 /* HTML source for the start of the page we generate.  */
 
-static char* page_start = //conteudo a ser exibido no inicio da pagina
+static char* inicio_da_pagina = //conteudo a ser exibido no inicio da pagina
         "<html>\n"
         "<head>\n"
             "<title>Calendário - SO</title>"
             "<meta charset=\"utf-8\">\n"
-	    "<link rel='icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOtSURBVGhD7ZpryE1ZGMdf9ztFxoxrNIhiJEL5ME2KSI2kqVHmg2sikXxjTFHCByQaxhcyhcTUpEbyxWUyJbfkUkMu4zK+MGWM6/j9tnd1drvjfc9hX6Tzr1/nrKe991rP2evyrPWcuvfUEngEY6LSu2kT/A09olJBWgb/w1Vop6FKTQTvfwzdNBSlFnAGbMxGDVWoM/wF3rtIQ9EaBs/gFXwDM+FnuAj34SX8Czfhd1gPE8BrdOIYNIUPQtvBRpVDR8rZAyOhcLWHbRAa+x8cgjkwFOz3TaA19IEvYQ1cguCIb20aFKa+EBqkIzvgM6hUdi+7X3DIMabTucpf9w7YgHsQpl8Hf6Xy2uawGoIzP0FuspucAyu+Bp+Dg/UwvICF0JBawSl4Ct9qQPMgdE/Xply0DqzQmWiwBvQphF/1pIYG9AWEaw9qqJdjR5vjbJCGLNUTrMgKF2iIyT5+Bb6OSm9XM9gJl8HBH9QSToPP3qchS/0AVuT4sH+nLX8En283664hK10AK9oC/TJgADwA65gPmagNNLa4pYndL1V1gbbQCazgOfyZIXfBen4F1RWcKd9Zrg1hmpXj9Z83IEtNAuu5BSGodKo2gugIVWkEGAj6EPcbhtl+z9ORgCGM65PfT4CzXsVyLfBGI1UXO8eHU6K2vByx8WEqd9p3utb+nYZK5LTqoHYsxPumi1Sejhjex+Uspt1IuyKFQf0wKpUU7Hk5EgZ7kOGM9t1RqQLVHElJNUeSqjmSkmqOJFVzJCXVHEnqo3GkA3jDP1GpJPclRToyHapyRBm6e1P/qPRG4eQ8L0euQ/ycbC1o97NimbPwJk8CfaWzIezc8nJEfoEpsBLcXBmRe2hesTzT/QPCA+Pk6Ugc9yeLoWq5L3EPsB92wSzwgXk54uZuBRwAt7mjIBUVPWulpuDI7aiUnSaD9Tg+MpNJSzNTS8GcRhaYX9GRVZCZ5oKOWFGWmKrwYDxTjYMfwT5spR4V7Y3xG2g3Mojbj4J2j0TL2T1P3gO+iVwzvL3BBiQH/xDQfj4qlTQWtCdPR4I9s8HdmGqORKWSao6kpY/GkV5gAzw1j8ugTvvZqFTSaNDuvx/i+goKdcTsrPlEgzlz7kHmFm1YcmU2leYa5D7HvU2Q063Xb41KBWkz2AjT1K72nt4/ARs8HpIyAPV6U3imoU3hGZrLcChMhvtHwMYFfEPLoZw+geT2wLdqxFC4/NvFVNgAdpPGflm3BzPAzdv3MBDeU3V1rwE/FuMlAfXKBQAAAABJRU5ErkJggg=='>"	
+	    "<link rel='icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOtSURBVGhD7ZpryE1ZGMdf9ztFxoxrNIhiJEL5ME2KSI2kqVHmg2sikXxjTFHCByQaxhcyhcTUpEbyxWUyJbfkUkMu4zK+MGWM6/j9tnd1drvjfc9hX6Tzr1/nrKe991rP2evyrPWcuvfUEngEY6LSu2kT/A09olJBWgb/w1Vop6FKTQTvfwzdNBSlFnAGbMxGDVWoM/wF3rtIQ9EaBs/gFXwDM+FnuAj34SX8Czfhd1gPE8BrdOIYNIUPQtvBRpVDR8rZAyOhcLWHbRAa+x8cgjkwFOz3TaA19IEvYQ1cguCIb20aFKa+EBqkIzvgM6hUdi+7X3DIMabTucpf9w7YgHsQpl8Hf6Xy2uawGoIzP0FuspucAyu+Bp+Dg/UwvICF0JBawSl4Ct9qQPMgdE/Xply0DqzQmWiwBvQphF/1pIYG9AWEaw9qqJdjR5vjbJCGLNUTrMgKF2iIyT5+Bb6OSm9XM9gJl8HBH9QSToPP3qchS/0AVuT4sH+nLX8En283664hK10AK9oC/TJgADwA65gPmagNNLa4pYndL1V1gbbQCazgOfyZIXfBen4F1RWcKd9Zrg1hmpXj9Z83IEtNAuu5BSGodKo2gugIVWkEGAj6EPcbhtl+z9ORgCGM65PfT4CzXsVyLfBGI1UXO8eHU6K2vByx8WEqd9p3utb+nYZK5LTqoHYsxPumi1Sejhjex+Uspt1IuyKFQf0wKpUU7Hk5EgZ7kOGM9t1RqQLVHElJNUeSqjmSkmqOJFVzJCXVHEnqo3GkA3jDP1GpJPclRToyHapyRBm6e1P/qPRG4eQ8L0euQ/ycbC1o97NimbPwJk8CfaWzIezc8nJEfoEpsBLcXBmRe2hesTzT/QPCA+Pk6Ugc9yeLoWq5L3EPsB92wSzwgXk54uZuBRwAt7mjIBUVPWulpuDI7aiUnSaD9Tg+MpNJSzNTS8GcRhaYX9GRVZCZ5oKOWFGWmKrwYDxTjYMfwT5spR4V7Y3xG2g3Mojbj4J2j0TL2T1P3gO+iVwzvL3BBiQH/xDQfj4qlTQWtCdPR4I9s8HdmGqORKWSao6kpY/GkV5gAzw1j8ugTvvZqFTSaNDuvx/i+goKdcTsrPlEgzlz7kHmFm1YcmU2leYa5D7HvU2Q063Xb41KBWkz2AjT1K72nt4/ARs8HpIyAPV6U3imoU3hGZrLcChMhvtHwMYFfEPLoZw+geT2wLdqxFC4/NvFVNgAdpPGflm3BzPAzdv3MBDeU3V1rwE/FuMlAfXKBQAAAABJRU5ErkJggg=='>"
 	    "</head>\n"
        " <body>\n"
 	"<div class='inicio'>"
@@ -27,7 +27,7 @@ static char* page_start = //conteudo a ser exibido no inicio da pagina
         "<pre id='calendario'>\n <!--tag pre pra elemento pre formatado, no caso vem do resultado do execv -->";
 
 
-static char* page_end = //conteudo html a ser exibido no fim da pagina
+static char* inicio_da_pagina = //conteudo html a ser exibido no fim da pagina
         "</pre>\n"
 	" <style>"
 ".footer {"
@@ -74,6 +74,12 @@ static char* page_end = //conteudo html a ser exibido no fim da pagina
     "min-width: 200px;"
     "min-height: 200px;"
 "}"
+".erro-parametro {"
+    "background: red;"
+    "text-align: center;"
+    "width: 80%;"
+    "height: 20%;"
+"}"
 "</style>"
 
 "<br><br><br><br><br><br><br>"
@@ -93,59 +99,59 @@ static char* page_end = //conteudo html a ser exibido no fim da pagina
 	"swal({"
 		"icon: 'warning',"
 		"title: 'Sistemas Operacionais - Calendário',"
-		"html: 'Utilize os parâmetros: <br><b>ano=XXXX</b>, para retornar o calendario do ano desejado, <br><b>mes=XX</b>, para retornar o calendário do mes desejado no ano corrente. <br>Da seguinte forma: <br><b>localhost:4444/cal?ano=XXXX&mes=XX</b>, <br>ou <b>localhost:4444/cal?ano=XXXX</b>, <br><b>ou localhost:4444/cal?mes=XX</b>'," 	
+		"html: 'Utilize os parâmetros: <br><b>ano=XXXX</b>, para retornar o calendario do ano desejado, <br><b>mes=XX</b>, para retornar o calendário do mes desejado no ano corrente. <br>Da seguinte forma: <br><b>localhost:4444/cal?ano=XXXX&mes=XX</b>, <br>ou <b>localhost:4444/cal?ano=XXXX</b>, <br><b>ou localhost:4444/cal?mes=XX</b>',"
 	"});"
 "</script>"
 
 "</html>\n";
-void module_generate (int fd)
+
+static char* erro_parametros =  "<div class='erro-parametros'>\n"
+                                    "<h1>Parametros invalidos!<h1>\n"
+                                    "<p>Uso: cal?ano=XXXX&mes=XX</p>\n"
+                                "</div>\n"
+void module_generate (int file_descriptor)
 {
   pid_t child_pid;
   int rval;
 
-  /* Write the start of the page.  */
-  write (fd, page_start, strlen (page_start));
-  /* Fork a child process.  */
+  write (file_descriptor, inicio_da_pagina, strlen (inicio_da_pagina)); //Escrevo o inicio da pagina html
   child_pid = fork ();
   if (child_pid == 0) {
-    /* This is the child process.  */
-    /* Set up an argumnet list for the invocation of df.  */
-    /* Duplicate stdout and stderr to send data to the client socket.  */
-    rval = dup2 (fd, STDOUT_FILENO);
+    //Processo Filho
+    rval = dup2 (file_descriptor, STDOUT_FILENO);
     if (rval == -1)
       system_error ("dup2");
-    rval = dup2 (fd, STDERR_FILENO);
+    rval = dup2 (file_descriptor, STDERR_FILENO);
     if (rval == -1)
       system_error ("dup2");
-
-          if(parametros == NULL){
-            char* argv[] = { "/usr/bin/cal", "-h", NULL };
-            execv (argv[0], argv);
-          }else{
-            char* aux_parametros = strtok(parametros, "&");
+          if(parametros == NULL){ //Se os parâmetros são nulos:
+            char* argv[] = { "/usr/bin/cal", "-h", NULL }; //Coloca o comando cal e o parametro -h no argv
+            execv (argv[0], argv); //Chama o cal com o argumento de ajuda
+          }else{ //Se os parâmetros não são nulos:
+            char* aux_parametros = strtok(parametros, "&"); //faz o strtok com o &
             char* aux_parametros2 = strtok(NULL, "&");
-            int ano = -1, mes = -1;
-            char* param1 = strtok(aux_parametros, "=");
+            int ano = -1, mes = -1; //coloca -1 no ano e no mes
+            char* param1 = strtok(aux_parametros, "="); //pega o valor para o parâmetro 1
             char* valor1 = strtok(NULL, "=");
-            if(param1 == NULL || valor1 == NULL){
-              write(fd, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
+            if(param1 == NULL || valor1 == NULL){ //Se o parametro 1 ou seu valor for nulo
+              write(file_descriptor, "", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
             }
             char* param2 = "-", valor2 = "-";
             if(aux_parametros2 != NULL){
               char* param2 = strtok(aux_parametros2, "=");
               char* valor2 = strtok(NULL, "=");
               if(param2 == NULL || valor2 == NULL){
-                write(fd, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
+                write(file_descriptor, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
               }
               if(!strcmp(param1, "ano") && !strcmp(param2, "mes")){
                 int ano = atoi(valor1);
                 int mes = atoi(valor2);
                 if(ano < 1 || ano > 9999){
-                  write(fd, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
+                  write(file_descriptor, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
                   char* argv[] = { "/usr/bin/cal", "-h", NULL };
                   execv (argv[0], argv);
                 }else if(mes < 1 || mes > 12){
-                  write(fd, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
+                  write(file_descriptor, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
                   char* argv[] = { "/usr/bin/cal", "-h", NULL };
                   execv (argv[0], argv);
                 }else{
@@ -156,11 +162,11 @@ void module_generate (int fd)
                 int ano = atoi(valor2);
                 int mes = atoi(valor1);
                 if(ano < 1 || ano > 9999){
-                  write(fd, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
+                  write(file_descriptor, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
                   char* argv[] = { "/usr/bin/cal", "-h", NULL };
                   execv (argv[0], argv);
                 }else if(mes < 1 || mes > 12){
-                  write(fd, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
+                  write(file_descriptor, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
                   char* argv[] = { "/usr/bin/cal", "-h", NULL };
                   execv (argv[0], argv);
                 }else{
@@ -168,7 +174,7 @@ void module_generate (int fd)
                   execv (argv[0], argv);
                 }
               }else{
-                write(fd, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
+                write(file_descriptor, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
                 char* argv[] = { "/usr/bin/cal", "-h", NULL };
                 execv (argv[0], argv);
               }
@@ -176,7 +182,7 @@ void module_generate (int fd)
               if(!strcmp(param1, "ano")){
                 int ano = atoi(valor1);
                 if(ano < 1 || ano > 9999){
-                  write(fd, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
+                  write(file_descriptor, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
                   char* argv[] = { "/usr/bin/cal", "-h", NULL };
                   execv (argv[0], argv);
                 }else{
@@ -186,7 +192,7 @@ void module_generate (int fd)
               }else if(!strcmp(param1, "mes")){
                 int mes = atoi(valor1);
                 if(mes < 1 || mes > 12){
-                  write(fd, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
+                  write(file_descriptor, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
                   char* argv[] = { "/usr/bin/cal", "-h", NULL };
                   execv (argv[0], argv);
                 }else{
@@ -194,7 +200,7 @@ void module_generate (int fd)
                   execv (argv[0], argv);
                 }
               }else{
-                write(fd, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
+                write(file_descriptor, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
                 char* argv[] = { "/usr/bin/cal", "-h", NULL };
                 execv (argv[0], argv);
               }
@@ -216,5 +222,5 @@ void module_generate (int fd)
     /* The call to fork failed.  */
     system_error ("fork");
   /* Write the end of the page.  */
-  write (fd, page_end, strlen (page_end));
+  write (file_descriptor, inicio_da_pagina, strlen (inicio_da_pagina));
 }
