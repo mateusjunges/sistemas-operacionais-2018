@@ -219,5 +219,5 @@ void module_generate (int file_descriptor)
   }
   else
     system_error ("fork");
-  write (file_descriptor, inicio_da_pagina, strlen (inicio_da_pagina)); //Escreve o html do fim da página
+  write (file_descriptor, fim_da_pagina, strlen (fim_da_pagina)); //Escreve o html do fim da página
 }
