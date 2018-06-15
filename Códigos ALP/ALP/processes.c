@@ -32,12 +32,12 @@ static int get_uid_gid (pid_t pid, uid_t* uid, gid_t* gid)
   snprintf (dir_name, sizeof (dir_name), "/proc/%d", (int) pid);
   /* Obtain information about the directory.  */
   rval = stat (dir_name, &dir_info);
-  if (rval != 0) 
+  if (rval != 0)
     /* Couldn't find it; perhaps this process no longer exists.  */
     return 1;
   /* Make sure it's a directory; anything else is unexpected.  */
   assert (S_ISDIR (dir_info.st_mode));
-  
+
   /* Extract the IDs we want.  */
   *uid = dir_info.st_uid;
   *gid = dir_info.st_gid;
@@ -100,14 +100,14 @@ static char* get_program_name (pid_t pid)
     return NULL;
   /* NUL-terminate the file contents.  */
   status_info[rval] = '\0';
-  
+
   /* The program name is the second element of the file contents, and is
      surrounded by parentheses.  Find the positions of the parentheses
      in the file contents.  */
   open_paren = strchr (status_info, '(');
   close_paren = strchr (status_info, ')');
-  if (open_paren == NULL 
-      || close_paren == NULL 
+  if (open_paren == NULL
+      || close_paren == NULL
       || close_paren < open_paren)
     /* Couldn't find them; bail.  */
     return NULL;
@@ -193,7 +193,7 @@ static char* format_process_info (pid_t pid)
 
   /* Compute the length of the string we'll need to hold the result, and
      allocate memory to hold it.  */
-  result_length = strlen (program_name) 
+  result_length = strlen (program_name)
     + strlen (user_name) + strlen (group_name) + 128;
   result = (char*) xmalloc (result_length);
   /* Format the result.  */
@@ -211,7 +211,7 @@ static char* format_process_info (pid_t pid)
 
 /* HTML source for the start of the process listing page.  */
 
-static char* page_start = 
+static char* page_start =
   "<html>\n"
   " <body>\n"
   "  <table cellpadding=\"4\" cellspacing=\"0\" border=\"1\">\n"
@@ -247,7 +247,7 @@ void module_generate (int fd)
   /* The allocated size of the array.  */
   size_t vec_size = 16;
   /* The array of iovcec elemens.  */
-  struct iovec* vec = 
+  struct iovec* vec =
     (struct iovec*) xmalloc (vec_size * sizeof (struct iovec));
 
   /* The first buffer is the HTML source for the start of the page.  */
@@ -266,7 +266,7 @@ void module_generate (int fd)
     const char* name;
     pid_t pid;
     char* process_info;
-  
+
     /* Get the next entry in /proc.  */
     proc_entry  = readdir (proc_listing);
     if (proc_entry == NULL)
@@ -307,7 +307,7 @@ void module_generate (int fd)
   vec[vec_length].iov_base = page_end;
   vec[vec_length].iov_len = strlen (page_end);
   ++vec_length;
-    
+
   /* Output the entire page to the client file descriptor all at once.  */
   writev (fd, vec, vec_length);
 

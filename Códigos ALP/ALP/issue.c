@@ -30,7 +30,7 @@ static char* page_end =
 /* HTML source for the page indicating there was a problem opening
    /proc/issue.  */
 
-static char* error_page = 
+static char* error_page =
   "<html>\n"
   " <body>\n"
   "  <p>Error: Could not open /proc/issue.</p>\n"
@@ -54,7 +54,7 @@ void module_generate (int fd)
   /* Obtain file information about it.  */
   rval = fstat (input_fd, &file_info);
 
-  if (rval == -1) 
+  if (rval == -1)
     /* Either we couldn't open the file or we couldn't read from it.  */
     write (fd, error_page, strlen (error_page));
   else {

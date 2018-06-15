@@ -59,7 +59,7 @@ void module_generate (int fd)
     if (rval == -1)
       system_error ("waitpid");
   }
-  else 
+  else
     /* The call to fork failed.  */
     system_error ("fork");
   /* Write the end of the page.  */

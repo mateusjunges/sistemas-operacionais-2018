@@ -16,14 +16,10 @@
 static char* page_template =
   "<html>\n"
   " <head>\n"
-	"<title>Relógio</title>" 
- "  <meta http-equiv=\"refresh\" content=\"5\">\n"
- 	"<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' integrity='sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB' crossorigin='anonymous'>\n"
+  "  <meta http-equiv=\"refresh\" content=\"5\">\n"
   " </head>\n"
   " <body>\n"
-	"<div class='alert alert-success text-center'>"
   "  <p>The current time is %s.</p>\n"
-	"</div>"
   " </body>\n"
   "</html>\n";
 
@@ -33,7 +29,7 @@ void module_generate (int fd)
   struct tm* ptm;
   char time_string[40];
   FILE* fp;
-  
+
   /* Obtain the time of day, and convert it to a tm struct.  */
   gettimeofday (&tv, NULL);
   ptm = localtime (&tv.tv_sec);

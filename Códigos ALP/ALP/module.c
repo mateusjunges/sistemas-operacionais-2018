@@ -22,7 +22,7 @@ struct server_module* module_open (const char* module_name)
 
   /* Construct the full path of the module shared library we'll try to
      load.  */
-  module_path = 
+  module_path =
     (char*) xmalloc (strlen (module_dir) + strlen (module_name) + 2);
   sprintf (module_path, "%s/%s", module_dir, module_name);
 

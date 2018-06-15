@@ -10,8 +10,8 @@
 SOURCES		= server.c module.c common.c main.c
 # Object files corresponding to source files.
 OBJECTS		= $(SOURCES:.c=.o)
-# Server module shared library files. 
-MODULES		= diskfree.so issue.so processes.so time.so cal.so 
+# Server module shared library files.
+MODULES		= diskfree.so issue.so processes.so time.so cal.so
 
 ### Rules.  ############################################################
 

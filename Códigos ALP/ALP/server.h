@@ -18,6 +18,9 @@ extern const char* program_name;
 /* If non-zero, print verbose messages.  */
 extern int verbose;
 
+//Parametros recebido por GET
+extern void* parametros;
+
 /* Like malloc, except aborts the program if allocation fails.  */
 extern void* xmalloc (size_t size);
 

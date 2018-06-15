@@ -6,8 +6,10 @@
 
 #include "server.h"
 
-		
-void* parametros; //Parametros recebidos no GET
+/*Parametros recebidos no GET*/
+void* parametros;
+
+/* HTML source for the start of the page we generate.  */
 
 static char* page_start = //conteudo a ser exibido no inicio da pagina
         "<html>\n"
@@ -59,10 +61,10 @@ static char* page_end = //conteudo html a ser exibido no fim da pagina
 	"width: auto;"
 "}"
 "body {"
-	"background: url('https://uploaddeimagens.com.br/images/001/459/455/original/logo_UEPG2.png?1528686439');"
+	"background: url('https://image.ibb.co/h6xVFJ/uepg.png');"
 	"background-position: center center;"
 	"background-repeat: no-repeat;"
-	"background-size: 300px 300px;"
+	"background-size: 320px 300px;"
 	"background-attachment: fixed;"
 "}"
 ".text {"
