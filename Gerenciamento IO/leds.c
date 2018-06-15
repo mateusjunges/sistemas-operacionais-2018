@@ -65,6 +65,7 @@
 #define VEZES	3
 
 void setLeds( unsigned char );
+void setAllLeds( unsigned char a	);
 void erro( char * );
 
 int main( int argc, char **argv )
@@ -78,12 +79,14 @@ int main( int argc, char **argv )
 	if( ioperm( PORTA_BASE, QTD_PORTAS, ON ) )
 		erro( "Falha no ioperm de acesso!" );
 	for( i = 0; i < VEZES; ++i) {
-		setLeds( L );
-		sleep( 1 );
-		setLeds( M );
-		sleep( 1 );
-		setLeds( R );
-		sleep( 1 );
+		//setLeds( L );
+		//sleep( 1 );
+		//setLeds( M );
+		//sleep( 1 );
+		//setLeds( R );
+		//sleep( 1 );
+		setAllLeds( M );
+		sleep(2);
 	}
 	if( ioperm( PORTA_BASE, QTD_PORTAS, OFF ) )
 		erro( "Falha no ioperm de fechamento!" );
@@ -100,6 +103,90 @@ void setLeds( unsigned char led )
 	while( (inb( PORTA_BASE + 4 ) & 2)  )// Faz máscara .E. com 2 para ver se o bit está ligado
 		;
 	usleep( 1500 );
+}
+void setAllLeds( unsigned char led1 ){
+	outb( 0xED, PORTA_BASE);
+	while( (inb( PORTA_BASE + 4 ) & 2) )
+		;
+	//outb( led1, PORTA_BASE );
+	//while( (inb( PORTA_BASE + 4 ) & 2 ) )
+	//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	;
 }
 
 void erro( char *msg )

@@ -3,13 +3,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <ctype.h>
-#include <wctype.h>
+
 #include "server.h"
 
-extern char* params; //params é declarado no server.c
+		
+void* parametros; //Parametros recebidos no GET
 
-static char* inicio_da_pagina = //conteudo a ser exibido no inicio da pagina
+static char* page_start = //conteudo a ser exibido no inicio da pagina
         "<html>\n"
         "<head>\n"
             "<title>Calendário - SO</title>"
@@ -25,7 +25,7 @@ static char* inicio_da_pagina = //conteudo a ser exibido no inicio da pagina
         "<pre id='calendario'>\n <!--tag pre pra elemento pre formatado, no caso vem do resultado do execv -->";
 
 
-static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
+static char* page_end = //conteudo html a ser exibido no fim da pagina
         "</pre>\n"
 	" <style>"
 ".footer {"
@@ -96,128 +96,123 @@ static char* fim_da_pagina = //conteudo html a ser exibido no fim da pagina
 "</script>"
 
 "</html>\n";
+void module_generate (int fd)
+{
+  pid_t child_pid;
+  int rval;
 
+  /* Write the start of the page.  */
+  write (fd, page_start, strlen (page_start));
+  /* Fork a child process.  */
+  child_pid = fork ();
+  if (child_pid == 0) {
+    /* This is the child process.  */
+    /* Set up an argumnet list for the invocation of df.  */
+    /* Duplicate stdout and stderr to send data to the client socket.  */
+    rval = dup2 (fd, STDOUT_FILENO);
+    if (rval == -1)
+      system_error ("dup2");
+    rval = dup2 (fd, STDERR_FILENO);
+    if (rval == -1)
+      system_error ("dup2");
 
-static char* erro =
-		"<div style='background: red;\n"
-		     " margin: auto;\n"
-		     "border-radius: 10%;\n"
-		     "text-align: center;\n"
-		     "width: 80%;'>\n"
-		     "<h1>Os parâmetros corretos são ano=ano&mes=mes</h1>\n"
-               "</div>\n";
-
-void module_generate(int file_descriptor) {
-    pid_t child_pid;
-    int rval;
-
-
-    write(file_descriptor, inicio_da_pagina, strlen(inicio_da_pagina)); //inicio da pagina html
-
-    child_pid = fork();
-    if (child_pid == 0) {
-        char* ano = NULL; //ano
-        char* mes = NULL; //mes
-        int a, m, flag = 0; // inteiros para ano e mes
-        char *auxiliar = malloc(sizeof (params));
-        strcpy(auxiliar, params);
-        if (strcmp(auxiliar, "")) {
-            mes = malloc(sizeof (auxiliar));
-            ano = malloc(sizeof (auxiliar));
-            strcpy(ano, auxiliar);
-            ano = strstr(ano, "ano");
-            if (ano != NULL) { // se o parametro ano existe
-                ano = strchr(ano, '=') + 1;
-                strtok(ano, "&");
-                a = atoi(ano);
+          if(parametros == NULL){
+            char* argv[] = { "/usr/bin/cal", "-h", NULL };
+            execv (argv[0], argv);
+          }else{
+            char* aux_parametros = strtok(parametros, "&");
+            char* aux_parametros2 = strtok(NULL, "&");
+            int ano = -1, mes = -1;
+            char* param1 = strtok(aux_parametros, "=");
+            char* valor1 = strtok(NULL, "=");
+            if(param1 == NULL || valor1 == NULL){
+              write(fd, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
             }
-            strcpy(mes, auxiliar);
-            mes = strstr(mes, "mes");
-            if (mes != NULL) { //se existe o parametro mes
-                mes = strchr(mes, '=') + 1;
-                m = atoi(mes); //passa para inteiro
-                strtok(mes, "&");
-            }
-            if (strstr(auxiliar, "&") != NULL) {
-                flag = 1;
-            }
-
-        }
-
-
-        rval = dup2(file_descriptor, STDOUT_FILENO);
-        if (rval == -1)
-            system_error("dup2");
-        rval = dup2(file_descriptor, STDERR_FILENO);
-        if (rval == -1)
-            system_error("dup2");
-
-        if (mes == NULL) { //se nao passou o parametro para o mes
-            if (flag == 1) {
-                write(file_descriptor, "<div style='background: red;\n"
-		     " margin: auto;\n"
-		     "border-radius: 10%;\n"
-		     "text-align: center;\n"
-		     "width: 80%;'>\n"
-		     "<h1>Os parâmetros corretos são ano=ano&mes=mes</h1>\n"
-               "</div>\n", strlen("<div style='background: red;\n"
-		     " margin: auto;\n"
-		     "border-radius: 10%;\n"
-		     "text-align: center;\n"
-		     "width: 80%;'>\n"
-		     "<h1>Os parâmetros corretos são ano=ano&mes=mes</h1>\n"
-               "</div>\n"));
-            }
-            if (ano == NULL) { // se o ano for NULL e mes for NULL
-                char* argv[] = {"/usr/bin/cal", NULL, NULL}; //Se passar só o cal na URL, busca o mes corrente do ano corrente
-                execv(argv[0], argv);
-            } else { // Se o mes é NULL e o ano existe
-                if (a < 0 || a > 9999 || a == NULL) { //se for um ano não válido
-                    write(file_descriptor, "<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n", strlen("<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n"));
-                    write(file_descriptor, "<br><h3><b>Ano deve ser um número entre 0 e 9999</b></h3>\n", strlen("<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3></div>\n"));
-                    char* argv[] = {"/usr/bin/cal", "-h", NULL}; //Executa o cal com o parametro '-h'
-                    execv(argv[0], argv);
-                } else {
-                    char* argv[] = {"/usr/bin/cal", ano, NULL};
-                    execv(argv[0], argv);
+            char* param2 = "-", valor2 = "-";
+            if(aux_parametros2 != NULL){
+              char* param2 = strtok(aux_parametros2, "=");
+              char* valor2 = strtok(NULL, "=");
+              if(param2 == NULL || valor2 == NULL){
+                write(fd, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
+              }
+              if(!strcmp(param1, "ano") && !strcmp(param2, "mes")){
+                int ano = atoi(valor1);
+                int mes = atoi(valor2);
+                if(ano < 1 || ano > 9999){
+                  write(fd, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
+                  char* argv[] = { "/usr/bin/cal", "-h", NULL };
+                  execv (argv[0], argv);
+                }else if(mes < 1 || mes > 12){
+                  write(fd, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
+                  char* argv[] = { "/usr/bin/cal", "-h", NULL };
+                  execv (argv[0], argv);
+                }else{
+                  char* argv[] = { "/usr/bin/cal", valor2, valor1, NULL };
+                  execv (argv[0], argv);
                 }
-            }
-        } else { //se o mes não for NULL
-            if (m < 1 || m > 12 || m == NULL) { // se for um mes não válido
-                write(file_descriptor, "<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n", strlen("<div style='background: red; text-align: center;'><h1><b>Parâmetros incorretos</b></h1>\n"));
-                write(file_descriptor, "<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3>\n", strlen("<br><h3><b>Mês deve ser um número entre 1 e 12</b></h3></div>\n"));
-                char* argv[] = {"/usr/bin/cal", "-h", NULL};
-                execv(argv[0], argv);
-            } else {
-                if (ano == NULL) {//se for um mês válido mas o ano está NULL
-                    if (flag == 1) {
-                        write(file_descriptor, "<div style='background: red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são: ano=ano&mes=mes</h1></div>\n\n", strlen("<div style='background:red; margin: auto; text-align: center; width: 80%; border-radius: 10%'><h1>Os parâmetros corretos são ano=ano&mes=mes</h1></div>\n"));
-                    }
-                    char* argv[] = {"/usr/bin/cal", "-m", mes, NULL};
-                    execv(argv[0], argv); //Executa o comando cal com o parametro -m e o mes passado na URL
-                } else {
-                    if (a < 0 || a > 9999 || a == NULL) { //se o ano existe mas não é valido
-                        write(file_descriptor, "<div style='background: red;'><h1 style='text-align: center;><b>Formato incorreto</b></h1>\n", strlen("<div style='background: red;'><h1 style='text-align: center;><b>Formato incorreto</b></h1>\n"));
-                        write(file_descriptor, "<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n", strlen("<br><b>Ano deve ser um número entre 0 e 9999</b></div>\n"));
-                        char* argv[] = {"/usr/bin/cal", "-h", NULL};  //executa cal com -h
-                        execv(argv[0], argv);
-                    } else {
-                                /* Se for ano e mes valido executa o
-                                cal com os parametros ano e mes
-                                passados na URL */
-                        char* argv[] = {"/usr/bin/cal", mes, ano, NULL};
-                        execv(argv[0], argv); //Executa o cal com o ano e o mes passados na URL
-                    }
+              }else if(!strcmp(param1, "mes") && !strcmp(param2, "ano")){
+                int ano = atoi(valor2);
+                int mes = atoi(valor1);
+                if(ano < 1 || ano > 9999){
+                  write(fd, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
+                  char* argv[] = { "/usr/bin/cal", "-h", NULL };
+                  execv (argv[0], argv);
+                }else if(mes < 1 || mes > 12){
+                  write(fd, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
+                  char* argv[] = { "/usr/bin/cal", "-h", NULL };
+                  execv (argv[0], argv);
+                }else{
+                  char* argv[] = { "/usr/bin/cal", valor1, valor2, NULL };
+                  execv (argv[0], argv);
                 }
+              }else{
+                write(fd, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
+                char* argv[] = { "/usr/bin/cal", "-h", NULL };
+                execv (argv[0], argv);
+              }
+            }else{
+              if(!strcmp(param1, "ano")){
+                int ano = atoi(valor1);
+                if(ano < 1 || ano > 9999){
+                  write(fd, "\n\nO ano deve ser entre 0 e 9999\n\n", strlen("\n\nO ano deve ser entre 0 e 9999\n\n"));
+                  char* argv[] = { "/usr/bin/cal", "-h", NULL };
+                  execv (argv[0], argv);
+                }else{
+                  char* argv[] = { "/usr/bin/cal", valor1, NULL };
+                  execv (argv[0], argv);
+                }
+              }else if(!strcmp(param1, "mes")){
+                int mes = atoi(valor1);
+                if(mes < 1 || mes > 12){
+                  write(fd, "\n\nO mes deve ser entre 1 e 12\n\n", strlen("\n\nO mes deve ser entre 1 e 12\n\n"));
+                  char* argv[] = { "/usr/bin/cal", "-h", NULL };
+                  execv (argv[0], argv);
+                }else{
+                  char* argv[] = { "/usr/bin/cal", "-m", valor1, NULL };
+                  execv (argv[0], argv);
+                }
+              }else{
+                write(fd, "\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n", strlen("\n Parametros invalidos! \n Uso: cal?ano=2000&mes=5\n\n"));
+                char* argv[] = { "/usr/bin/cal", "-h", NULL };
+                execv (argv[0], argv);
+              }
             }
-        }
-
-        system_error("execv"); // se erro
-    } else if (child_pid > 0) {
-        rval = waitpid(child_pid, NULL, 0);
-        if (rval == -1)
-            system_error("waitpid"); //se erro
-    } else
-        system_error("fork");
-    write(file_descriptor, fim_da_pagina, strlen(fim_da_pagina)); //final da pagina
+          }
+    /* Run df to show the free space on mounted file systems.  */
+    //execv (argv[0], argv);
+    /* A call to execv does not return unless an error occurred.  */
+    system_error ("execv");
+  }
+  else if (child_pid > 0) {
+    /* This is the parent process.  Wait for the child process to
+       finish.  */
+    rval = waitpid (child_pid, NULL, 0);
+    if (rval == -1)
+      system_error ("waitpid");
+  }
+  else
+    /* The call to fork failed.  */
+    system_error ("fork");
+  /* Write the end of the page.  */
+  write (fd, page_end, strlen (page_end));
 }
