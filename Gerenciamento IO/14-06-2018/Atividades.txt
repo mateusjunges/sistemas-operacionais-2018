@@ -1,0 +1,72 @@
+AULA TEÓRICA: 14/06/2018
+========================                        
+
+Pesquise e responda:
+
+1. O que são operações de E/S síncronas e assíncronas ? Qual o interesse 
+de realizar operações assíncronas ?
+ 
+2. Uma das funções do sistema de E/S é fornecer E/S independente do 
+periférico. O que isto significa ? Qual a finalidade desta 
+característica ? Comente este aspecto sob o ponto de vista interação do 
+usuário com diferentes dispositivos do sistema.
+
+3. Durante a leitura de um arquivo em disco o driver de disco recebe 
+requisições para acessar os cilindros 19, 22, 20, 2, 40, 6 e 38 nesta 
+ordem. Determine, em cilindros, o número de movimentos que o cabeçote de 
+leitura necessita realizar se o algoritmo utilizado para o seek é :
+	(a) First-Come, First-Served           
+	(b) Shortest Seek Time First        
+	(c) Algoritmo do elevador 
+Para todos os casos, considerar que o cabeçote está inicialmente sobre o 
+cilindro 20.
+
+4. Qual a finalidade de um sistema de arquivos oferecer suporte a 
+múltiplos tipos de sistemas de arquivos ?
+
+5. Um esquema de alocação contigua de arquivos em disco leva a uma 
+fragmentação do disco. Que tipo de fragmentação é esta (interna ou 
+externa) ? Qual a vantagem de utilizar este esquema de alocação ?
+
+6. Um esquema de alocação encadeada é apropriada para arquivos que são 
+acessados randomicamente? Sim? Não? Justifique sua resposta.
+
+7. Qual o principal problema na utilização de caches de disco ? Explique 
+a situação e o porquê deste problema ?
+
+8. Considere um sistema de arquivos que suporta as estratégias alocação 
+contígua, alocação encadeada e alocação indexada. Qual critério deve ser 
+usado para decidir qual estratégia é a melhor para um determinado 
+arquivo ?
+
+9. Projetar utilizando discos de 10 Gbytes um sistema RAID 0, RAID 1 e 
+RAID 5 que permita o armazenamento de 40 Gbytes de dados (úteis). Para 
+cada configuração de RAID determine quantos discos físicos de 10 Gbytes 
+são necessários para armazenar 40 Gbytes de dados.
+
+10. Supondo um sistema de arquivos determine o tempo médio de acesso 
+para um arquivo de 1 Mbytes para os dois seguintes casos :
+	(A) Leitura seqüencial (sistema de arquivos com organização 
+seqüencial)
+	(B) Leitura randômica (pior caso para um sistema de arquivos com 
+organização indexada)
+Considerar que o descritor de arquivo (entrada do diretório) já está 
+carregado em memória, isto é, não há necessidade de acessar o disco para 
+ler o descritor de arquivos.
+O disco desse sistema possui as seguintes características : tseek_medio= 
+10 ms ; tempo médio de latência rotacional = 3 ms (6 ms tempo de uma 
+rotação) ; 512 bytes por setor ; 256 setores por trilha.
+
+11. Explique porque caches de disco melhoram o desempenho de um sistema 
+? Qual o maior inconveniente do uso desse tipo de cache?
+
+12. Suponha que um disco possui 5000 cilindros, numerados de 0 a 4999. A 
+requisição finalizada neste momento corresponde a um acesso ao cilindro 
+143. A requisição precedente foi no cilindro 125. A lista de requisições
+pendentes é : 86, 1470, 913, 1774, 948, 1590, 1022, 1750, 130 Iniciando 
+na posição atual, determine a seqüência de cilindros em que essas 
+requisições serão atendidas considerando os seguinte algoritmos de 
+escalonamento do disco :
+	(A) FCFS              
+	(B) SSTF                    
+	(C) SCAN
