@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <iostream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -20,6 +21,10 @@ using namespace std;
 	}
 
 	int main(){
+		
+		printf("Sistemas Operacionais 2018 - Mateus Junges");	
+		printf("\nPressione qualquer tecla para continuar";
+		getchar();
 
 		FILE *fp;
 		fp = popen( "sort file.txt", "r" );

@@ -37,6 +37,9 @@ void *thread(){
 }
 
 int main( void ){
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
 	int i, fileDescriptor, ids, status, n_processos;
   	float n1, n2, n3, media;
   	clock_t startedAt;

@@ -16,6 +16,10 @@ void imprime();
 
 int main(void)
 {
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
+	
     void *p,*q, *t;
     imprime();
     inicializa_memoria(100);

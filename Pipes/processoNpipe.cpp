@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #define READ 0  // stdin(0)
 #define WRITE 1 // stdout(1)
@@ -13,6 +14,9 @@
 #define VAL 20
 
 main() {
+  printf("Sistemas Operacionais 2018 - Mateus Junges");	
+  printf("\nPressione qualquer tecla para continuar";
+  getchar();	
   pid_t proc[ NP ];
   int fd[ NP ][ 2 ], 
       np, val, i;

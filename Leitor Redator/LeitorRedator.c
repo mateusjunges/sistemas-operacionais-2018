@@ -78,6 +78,10 @@ void write(int id)
 //MAIN
 int main(int argc, char* argv[])
 {
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
+	
    pthread_t R[5],W[5];
    int ids[5];
    for(int i=0; i<5; i++)

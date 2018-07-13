@@ -14,6 +14,9 @@ bool condicao = true;
 
 int main(){
 
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
         while( condicao ){
             signal( SIGINT, sig_handler);
                     /*

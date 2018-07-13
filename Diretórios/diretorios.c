@@ -34,6 +34,9 @@ static void pesquisa(const char *arg)
 
 int main(int argc, char *argv[])
 {
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
     int i;
 
     if( argc < 2 ) {

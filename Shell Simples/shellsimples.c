@@ -3,7 +3,7 @@
 
   Shell para execução de comandos simples;
      - Esse código roda em Linux;
-
+	 - Mateus Junges 	
 ***************************************************************/
 
 #include <stdlib.h>
@@ -15,6 +15,10 @@
 
 int main( void )
 {
+  printf("Sistemas Operacionais 2018 - Mateus Junges");	
+  printf("\nPressione qualquer tecla para continuar";
+  getchar();
+	
  char lc[ 81 ];
  char *argv[ 20 ];
  int pid, i, status;

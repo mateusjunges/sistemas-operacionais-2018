@@ -86,6 +86,9 @@ void consumer()
 
 int main()
 {
+  printf("Sistemas Operacionais 2018 - Mateus Junges");	
+  printf("\nPressione qualquer tecla para continuar";
+  getchar();	
   buffer=(int*)calloc(MAX_BUF,sizeof(int));
   pthread_t pro,con;
   int values[]={1,0,0};

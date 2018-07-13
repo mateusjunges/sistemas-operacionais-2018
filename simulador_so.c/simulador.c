@@ -242,6 +242,9 @@ void processo_4( void )
 
 int main ()
 {
+  printf("Sistemas Operacionais 2018 - Mateus Junges");	
+  printf("\nPressione qualquer tecla para continuar";
+  getchar();
   init_proc();
   cria_processo( (void *) processo_1 );
   cria_processo( (void *) processo_2 );

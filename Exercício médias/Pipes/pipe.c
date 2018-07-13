@@ -15,6 +15,10 @@ int b = 0;
 float notas2[N_NOTAS];
 
 int main( void ){
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
+	
 	int i, fd, ids, status, n_processos;
   	float n1, n2, n3, media;
   	clock_t startedAt;

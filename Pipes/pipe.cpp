@@ -19,6 +19,9 @@ void criapipe(){
 
 
 int main(){
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
     pid_t id_processo; /* Cria uma variável para armazenar o
                         ID quando der o fork*/
 

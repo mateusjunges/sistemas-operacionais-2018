@@ -251,6 +251,9 @@ void meu_libera(void *ponteiro){
 }
 
 int main(){
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
 	inicializa_mem();
   /*void *a1  =  meu_aloca(1, 10);
   void *a2  =  meu_aloca(1, 5);

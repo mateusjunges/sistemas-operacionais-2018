@@ -101,7 +101,10 @@ void comer(int i){
 }
  
 int main(){
- 
+	
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
     for(i=0;i<N; i++){
        state[i]=0;
     }

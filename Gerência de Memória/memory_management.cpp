@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 
 struct memory {
     struct memory *next;
@@ -211,6 +212,9 @@ void free(struct memory *address) {
 }
 
 int main(int argc, char *argv[]) {
+	printf("Sistemas Operacionais 2018 - Mateus Junges");	
+	printf("\nPressione qualquer tecla para continuar";
+	getchar();
     begin_memory();
     show_memory();
     return 0;

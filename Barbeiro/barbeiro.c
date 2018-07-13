@@ -21,6 +21,9 @@ void cortandoCabelo();
 void clienteDesistiu();
 
 int main() {
+printf("Sistemas Operacionais 2018 - Mateus Junges");	
+printf("\nPressione qualquer tecla para continuar";
+getchar();
 sem_init(&sem_clientes, TRUE, 0);
 sem_init(&sem_barbeiros, TRUE, 0);
 sem_init(&mutex, TRUE, 1);
